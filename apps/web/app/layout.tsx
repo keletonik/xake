@@ -20,20 +20,21 @@ export const metadata: Metadata = {
 
 const CLERK_ENABLED = !!process.env.CLERK_SECRET_KEY && !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
-async function ShellBody({ children }: { children: ReactNode }) {
-  const common = (
+async function Providers({ children }: { children: ReactNode }) {
+  const inner = (
     <ThemeProvider>
       <TooltipProvider delayDuration={150}>
         <ToastProvider>{children}</ToastProvider>
       </TooltipProvider>
     </ThemeProvider>
   );
-  if (!CLERK_ENABLED) return common;
+  if (!CLERK_ENABLED) return inner;
   const { ClerkProvider } = await import("@clerk/nextjs");
-  return <ClerkProvider>{common}</ClerkProvider>;
+  return <ClerkProvider>{inner}</ClerkProvider>;
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const body = await Providers({ children });
   return (
     <html
       lang="en-AU"
@@ -47,10 +48,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
       </head>
-      <body>
-        {/* @ts-expect-error Async Server Component */}
-        <ShellBody>{children}</ShellBody>
-      </body>
+      <body>{body}</body>
     </html>
   );
 }

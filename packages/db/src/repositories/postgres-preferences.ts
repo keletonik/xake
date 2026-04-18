@@ -6,6 +6,9 @@ import type { PreferenceRecord } from "./index.js";
  * for watchlists, alerts, orders, fills, and the audit ledger. The
  * first vertical (preferences) is implemented here so both the wiring
  * and the shape are documented; the rest follows the same style.
+ *
+ * Column names are snake_case in the DB and camelCase in the domain
+ * type, so every read goes through `rowToRecord` to convert explicitly.
  */
 
 const DEFAULTS: Omit<PreferenceRecord, "accountId"> = {
@@ -19,20 +22,51 @@ const DEFAULTS: Omit<PreferenceRecord, "accountId"> = {
   paperStartingCash: 100_000
 };
 
+interface Row {
+  account_id: string;
+  theme: PreferenceRecord["theme"];
+  timezone: string | null;
+  default_symbol: string;
+  default_timeframe: string;
+  default_watchlist_id: string | null;
+  ai_enabled: boolean;
+  ai_premium_reasoning: boolean;
+  notifications_in_app: boolean;
+  notifications_email: boolean;
+  notifications_webhook: string | null;
+  paper_starting_cash: string | number;
+}
+
+const rowToRecord = (r: Row): PreferenceRecord => ({
+  accountId: r.account_id,
+  theme: r.theme,
+  timezone: r.timezone ?? undefined,
+  defaultSymbol: r.default_symbol,
+  defaultTimeframe: r.default_timeframe,
+  defaultWatchlistId: r.default_watchlist_id ?? undefined,
+  aiEnabled: r.ai_enabled,
+  aiPremiumReasoning: r.ai_premium_reasoning,
+  notificationsInApp: r.notifications_in_app,
+  notificationsEmail: r.notifications_email,
+  notificationsWebhook: r.notifications_webhook ?? undefined,
+  paperStartingCash: Number(r.paper_starting_cash)
+});
+
 export class PostgresPreferencesRepository {
   constructor(private readonly sql: Sql) {}
 
   async get(accountId: string): Promise<PreferenceRecord> {
-    const rows = await this.sql<
-      PreferenceRecord[]
-    >`SELECT * FROM user_preferences WHERE account_id = ${accountId} LIMIT 1`;
-    if (rows.length === 0) return { accountId, ...DEFAULTS };
-    const r = rows[0]!;
-    return { ...DEFAULTS, ...r };
+    const rows = await this.sql<Row[]>`
+      SELECT * FROM user_preferences WHERE account_id = ${accountId} LIMIT 1
+    `;
+    const first = rows[0];
+    if (!first) return { accountId, ...DEFAULTS };
+    return rowToRecord(first);
   }
 
   async update(accountId: string, patch: Partial<PreferenceRecord>): Promise<PreferenceRecord> {
-    const next: PreferenceRecord = { ...(await this.get(accountId)), ...patch, accountId };
+    const current = await this.get(accountId);
+    const next: PreferenceRecord = { ...current, ...patch, accountId };
     await this.sql`
       INSERT INTO user_preferences (
         account_id, theme, timezone, default_symbol, default_timeframe,
@@ -56,7 +90,8 @@ export class PostgresPreferencesRepository {
         notifications_in_app = EXCLUDED.notifications_in_app,
         notifications_email = EXCLUDED.notifications_email,
         notifications_webhook = EXCLUDED.notifications_webhook,
-        paper_starting_cash = EXCLUDED.paper_starting_cash
+        paper_starting_cash = EXCLUDED.paper_starting_cash,
+        updated_at = now()
     `;
     return next;
   }
