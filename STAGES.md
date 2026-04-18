@@ -41,13 +41,17 @@ Exit criteria: `pnpm lint && pnpm typecheck && pnpm test` all pass on a clean cl
 
 Goal: the XAKE look and feel — tokens, typography, surfaces, theme toggle.
 
-- [ ] `packages/ui` with colour, spacing, radius, shadow, and type tokens
-- [ ] Geist Sans + Geist Mono with a safe fallback stack
-- [ ] Dark, darker, and light/system theme modes wired via CSS variables
-- [ ] Theme toggle component with `prefers-reduced-motion` support
-- [ ] Core primitives: Button, Input, Panel, Tabs, Tooltip, Toast, Dialog (Radix-based)
-- [ ] App shell: top bar, left rail, right drawer, status footer
-- [ ] Paper-environment badge that is impossible to miss
+- [x] `packages/ui` with colour, spacing, radius, shadow, type, motion, z-index tokens
+- [x] Geist Sans + Geist Mono wired via `geist/font` with a safe fallback stack
+- [x] Dark, darker, and light/system theme modes wired via CSS variables
+- [x] Theme provider, theme toggle, flash-free bootstrap script
+- [x] Primitives: Button, Input, Textarea, Badge, EnvBadge, Kbd, Separator, Card, Panel, Toolbar, SectionHeader, StatusBar, EmptyState, ErrorState, AppShell
+- [x] Radix-backed: Tabs, Tooltip, Dialog, Toast
+- [x] Paper-environment badge as a dedicated primitive
+- [x] Live `/style-guide` page covering palette, type, spacing, radii, shadows, motion, semantics
+- [x] Live `/components` page showcasing every primitive interactively
+- [x] Token and primitive documentation in `docs/ux/`
+- [x] `prefers-reduced-motion` honoured at the root
 
 Exit criteria: workspace shell renders with theme toggle and paper badge; all primitives pass keyboard and contrast checks.
 

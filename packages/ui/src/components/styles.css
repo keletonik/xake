@@ -1,0 +1,878 @@
+/*
+ * XAKE component styles.
+ * All primitives share this file so the cascade is explicit and the
+ * token-driven look stays coherent. Class names are prefixed with `xake-`
+ * to avoid collisions when consumed in any host app.
+ */
+
+/* ============================================================
+ * Button
+ * ============================================================ */
+.xake-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--colour-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: 500;
+  letter-spacing: 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+  user-select: none;
+}
+
+.xake-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.xake-btn:disabled,
+.xake-btn[aria-disabled="true"] {
+  color: var(--colour-text-disabled);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.xake-btn[data-size="sm"] { height: 28px; padding: 0 10px; font-size: var(--text-dense); }
+.xake-btn[data-size="lg"] { height: 44px; padding: 0 18px; font-size: var(--text-h3); }
+.xake-btn[data-icon-only="true"] { padding: 0; width: 36px; }
+.xake-btn[data-icon-only="true"][data-size="sm"] { width: 28px; }
+.xake-btn[data-icon-only="true"][data-size="lg"] { width: 44px; }
+
+/* Primary — the singular, decisive action */
+.xake-btn[data-variant="primary"] {
+  background: var(--colour-accent);
+  color: var(--colour-text-on-accent);
+  border-color: var(--colour-accent);
+}
+.xake-btn[data-variant="primary"]:hover {
+  background: var(--colour-accent-hover);
+  border-color: var(--colour-accent-hover);
+}
+
+/* Secondary — neutral-but-present */
+.xake-btn[data-variant="secondary"] {
+  background: var(--colour-bg-raised);
+  color: var(--colour-text-primary);
+  border-color: var(--colour-border);
+}
+.xake-btn[data-variant="secondary"]:hover {
+  background: var(--colour-bg-elevated);
+  border-color: var(--colour-border-strong);
+}
+
+/* Ghost — stays in the background */
+.xake-btn[data-variant="ghost"] {
+  background: transparent;
+  color: var(--colour-text-secondary);
+}
+.xake-btn[data-variant="ghost"]:hover {
+  background: var(--colour-bg-raised);
+  color: var(--colour-text-primary);
+}
+
+/* Danger — destructive only */
+.xake-btn[data-variant="danger"] {
+  background: var(--colour-negative-subtle);
+  color: var(--colour-negative);
+  border-color: var(--colour-negative-border);
+}
+.xake-btn[data-variant="danger"]:hover {
+  background: var(--colour-negative);
+  color: #ffffff;
+  border-color: var(--colour-negative);
+}
+.xake-btn[data-variant="danger"]:focus-visible {
+  box-shadow: var(--focus-ring-danger);
+}
+
+/* Link — in-flow action */
+.xake-btn[data-variant="link"] {
+  height: auto;
+  padding: 0;
+  background: transparent;
+  color: var(--colour-accent);
+}
+.xake-btn[data-variant="link"]:hover {
+  color: var(--colour-accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ============================================================
+ * Input
+ * ============================================================ */
+.xake-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  width: 100%;
+  background: var(--colour-bg-canvas);
+  border: 1px solid var(--colour-border);
+  border-radius: var(--radius-md);
+  color: var(--colour-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.xake-input::placeholder { color: var(--colour-text-muted); }
+.xake-input:hover { border-color: var(--colour-border-strong); }
+.xake-input:focus,
+.xake-input:focus-within {
+  outline: none;
+  border-color: var(--colour-accent-border);
+  box-shadow: var(--focus-ring);
+  background: var(--colour-bg-raised);
+}
+.xake-input:disabled {
+  color: var(--colour-text-disabled);
+  background: var(--colour-bg-canvas);
+  cursor: not-allowed;
+}
+
+.xake-input[data-variant="mono"] {
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+textarea.xake-input {
+  height: auto;
+  min-height: 96px;
+  padding: 10px 12px;
+  resize: vertical;
+  line-height: var(--leading-normal);
+}
+
+/* ============================================================
+ * Badge
+ * ============================================================ */
+.xake-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--colour-border);
+  background: var(--colour-bg-raised);
+  color: var(--colour-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.xake-badge[data-tone="accent"] {
+  background: var(--colour-accent-subtle);
+  border-color: var(--colour-accent-border);
+  color: var(--colour-accent);
+}
+.xake-badge[data-tone="positive"] {
+  background: var(--colour-positive-subtle);
+  border-color: var(--colour-positive-border);
+  color: var(--colour-positive);
+}
+.xake-badge[data-tone="negative"] {
+  background: var(--colour-negative-subtle);
+  border-color: var(--colour-negative-border);
+  color: var(--colour-negative);
+}
+.xake-badge[data-tone="warning"] {
+  background: var(--colour-warning-subtle);
+  border-color: var(--colour-warning-border);
+  color: var(--colour-warning);
+}
+.xake-badge[data-tone="info"] {
+  background: var(--colour-info-subtle);
+  border-color: var(--colour-info-border);
+  color: var(--colour-info);
+}
+
+.xake-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+  opacity: 0.9;
+}
+
+/* ============================================================
+ * Environment badge — paper is impossible to miss
+ * ============================================================ */
+.xake-env-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--colour-warning-border);
+  background: var(--colour-warning-subtle);
+  color: var(--colour-warning);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+.xake-env-badge[data-env="live"] {
+  border-color: var(--colour-negative-border);
+  background: var(--colour-negative-subtle);
+  color: var(--colour-negative);
+}
+.xake-env-badge__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: currentColor;
+  box-shadow: 0 0 10px currentColor;
+}
+
+/* ============================================================
+ * Kbd — keyboard shortcut pill
+ * ============================================================ */
+.xake-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--colour-border);
+  border-bottom-width: 2px;
+  background: var(--colour-bg-raised);
+  color: var(--colour-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* ============================================================
+ * Separator
+ * ============================================================ */
+.xake-separator {
+  display: block;
+  background: var(--colour-border);
+  flex-shrink: 0;
+}
+.xake-separator[data-orientation="horizontal"] { height: 1px; width: 100%; }
+.xake-separator[data-orientation="vertical"] { width: 1px; height: 100%; }
+
+/* ============================================================
+ * Card
+ * ============================================================ */
+.xake-card {
+  background: var(--colour-bg-raised);
+  border: 1px solid var(--colour-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.xake-card[data-interactive="true"] {
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+.xake-card[data-interactive="true"]:hover {
+  border-color: var(--colour-border-strong);
+  background: var(--colour-bg-elevated);
+}
+
+.xake-card__title {
+  font-size: var(--text-h3);
+  font-weight: 600;
+  color: var(--colour-text-primary);
+  margin: 0;
+}
+
+.xake-card__description {
+  color: var(--colour-text-secondary);
+  font-size: var(--text-body);
+  margin: 0;
+}
+
+.xake-card__meta {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--colour-text-muted);
+}
+
+/* ============================================================
+ * Panel — the signature workstation surface
+ * ============================================================ */
+.xake-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--colour-bg-canvas);
+  border: 1px solid var(--colour-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.xake-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  height: 44px;
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--colour-border);
+  background: var(--colour-bg-raised);
+}
+
+.xake-panel__title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-dense);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--colour-text-secondary);
+}
+
+.xake-panel__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.xake-panel__body {
+  flex: 1 1 auto;
+  padding: var(--space-4);
+  overflow: auto;
+}
+
+.xake-panel[data-dense="true"] .xake-panel__body { padding: var(--space-3); }
+.xake-panel[data-flush="true"] .xake-panel__body { padding: 0; }
+
+/* ============================================================
+ * Toolbar
+ * ============================================================ */
+.xake-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--colour-border);
+  border-radius: var(--radius-md);
+  background: var(--colour-bg-raised);
+}
+
+.xake-toolbar__group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.xake-toolbar__separator {
+  width: 1px;
+  height: 18px;
+  background: var(--colour-border);
+  margin: 0 var(--space-2);
+}
+
+/* ============================================================
+ * Section header
+ * ============================================================ */
+.xake-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-2) 0 var(--space-4);
+  border-bottom: 1px solid var(--colour-border);
+  margin-bottom: var(--space-5);
+}
+
+.xake-section-header__title {
+  font-size: var(--text-h2);
+  font-weight: 600;
+  letter-spacing: var(--tracking-snug);
+  color: var(--colour-text-primary);
+  margin: 0;
+}
+
+.xake-section-header__eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--colour-accent);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.xake-section-header__description {
+  color: var(--colour-text-secondary);
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-body);
+  max-width: 64ch;
+}
+
+.xake-section-header__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ============================================================
+ * Status bar
+ * ============================================================ */
+.xake-statusbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  height: var(--statusbar-h);
+  padding: 0 var(--space-5);
+  border-top: 1px solid var(--colour-border);
+  background: var(--colour-bg-canvas);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--colour-text-muted);
+}
+.xake-statusbar__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.xake-statusbar__item strong {
+  color: var(--colour-text-secondary);
+  font-weight: 500;
+}
+
+/* ============================================================
+ * App shell
+ * ============================================================ */
+.xake-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: var(--rail-w) 1fr;
+  grid-template-rows: var(--topbar-h) 1fr var(--statusbar-h);
+  grid-template-areas:
+    "topbar topbar"
+    "rail main"
+    "statusbar statusbar";
+  background: var(--colour-bg-primary);
+}
+
+.xake-shell__topbar {
+  grid-area: topbar;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 0 var(--space-5);
+  border-bottom: 1px solid var(--colour-border);
+  background: var(--colour-bg-canvas);
+  z-index: var(--z-topbar);
+}
+
+.xake-shell__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--text-dense);
+  letter-spacing: var(--tracking-wide);
+  color: var(--colour-text-primary);
+}
+.xake-shell__brand-mark {
+  color: var(--colour-accent);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.xake-shell__topbar-group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.xake-shell__rail {
+  grid-area: rail;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-3);
+  border-right: 1px solid var(--colour-border);
+  background: var(--colour-bg-canvas);
+  z-index: var(--z-rail);
+}
+
+.xake-shell__main {
+  grid-area: main;
+  padding: var(--space-6);
+  overflow: auto;
+  background: var(--colour-bg-primary);
+}
+
+.xake-shell__statusbar { grid-area: statusbar; }
+
+.xake-rail-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  color: var(--colour-text-secondary);
+  font-size: var(--text-body);
+  font-weight: 500;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+  text-decoration: none;
+}
+.xake-rail-item:hover {
+  background: var(--colour-bg-raised);
+  color: var(--colour-text-primary);
+}
+.xake-rail-item[data-active="true"] {
+  background: var(--colour-accent-subtle);
+  color: var(--colour-accent);
+}
+.xake-rail-item__icon {
+  display: inline-flex;
+  width: 16px;
+  justify-content: center;
+  color: inherit;
+  opacity: 0.9;
+}
+.xake-rail-item__kbd {
+  margin-left: auto;
+  opacity: 0.6;
+}
+.xake-rail-heading {
+  padding: var(--space-3) 10px var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--colour-text-muted);
+}
+
+@media (max-width: 880px) {
+  .xake-shell {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "topbar"
+      "main"
+      "statusbar";
+  }
+  .xake-shell__rail { display: none; }
+}
+
+/* ============================================================
+ * Empty state
+ * ============================================================ */
+.xake-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-12) var(--space-6);
+  text-align: center;
+  border: 1px dashed var(--colour-border);
+  border-radius: var(--radius-lg);
+  background: var(--colour-bg-canvas);
+}
+.xake-empty__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  background: var(--colour-accent-subtle);
+  color: var(--colour-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-1);
+}
+.xake-empty__title {
+  font-size: var(--text-h3);
+  font-weight: 600;
+  color: var(--colour-text-primary);
+  margin: 0;
+}
+.xake-empty__description {
+  color: var(--colour-text-secondary);
+  max-width: 42ch;
+  margin: 0;
+}
+.xake-empty__actions {
+  display: inline-flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+/* ============================================================
+ * Error state
+ * ============================================================ */
+.xake-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-12) var(--space-6);
+  text-align: center;
+  border: 1px solid var(--colour-negative-border);
+  border-radius: var(--radius-lg);
+  background: var(--colour-negative-subtle);
+}
+.xake-error__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  background: var(--colour-negative-subtle);
+  color: var(--colour-negative);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.xake-error__title {
+  font-size: var(--text-h3);
+  font-weight: 600;
+  color: var(--colour-text-primary);
+  margin: 0;
+}
+.xake-error__description {
+  color: var(--colour-text-secondary);
+  max-width: 52ch;
+  margin: 0;
+}
+.xake-error__detail {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--colour-negative);
+  letter-spacing: var(--tracking-wide);
+}
+
+/* ============================================================
+ * Tabs (Radix)
+ * ============================================================ */
+.xake-tabs-list {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  background: var(--colour-bg-raised);
+  border: 1px solid var(--colour-border);
+}
+.xake-tabs-trigger {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--colour-text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-dense);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+.xake-tabs-trigger:hover { color: var(--colour-text-primary); }
+.xake-tabs-trigger[data-state="active"] {
+  background: var(--colour-bg-elevated);
+  color: var(--colour-text-primary);
+  box-shadow: var(--shadow-xs);
+}
+.xake-tabs-trigger:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.xake-tabs-content { margin-top: var(--space-4); }
+
+/* ============================================================
+ * Tooltip (Radix)
+ * ============================================================ */
+.xake-tooltip-content {
+  background: var(--colour-bg-elevated);
+  color: var(--colour-text-primary);
+  border: 1px solid var(--colour-border);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-md);
+  padding: 6px 10px;
+  font-size: var(--text-dense);
+  z-index: var(--z-tooltip);
+  max-width: 320px;
+}
+.xake-tooltip-arrow { fill: var(--colour-bg-elevated); }
+
+/* ============================================================
+ * Dialog (Radix)
+ * ============================================================ */
+.xake-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--colour-bg-overlay);
+  backdrop-filter: blur(6px);
+  z-index: var(--z-dialog);
+  animation: xake-fade-in var(--duration-medium) var(--ease-standard);
+}
+.xake-dialog-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  background: var(--colour-bg-elevated);
+  border: 1px solid var(--colour-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  padding: var(--space-6);
+  z-index: var(--z-dialog);
+  animation: xake-scale-in var(--duration-medium) var(--ease-out-expo);
+}
+.xake-dialog-title {
+  font-size: var(--text-h2);
+  font-weight: 600;
+  margin: 0 0 var(--space-2);
+}
+.xake-dialog-description {
+  color: var(--colour-text-secondary);
+  margin: 0 0 var(--space-5);
+}
+.xake-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+}
+.xake-dialog-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  color: var(--colour-text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.xake-dialog-close:hover {
+  background: var(--colour-bg-raised);
+  color: var(--colour-text-primary);
+}
+
+/* ============================================================
+ * Toast (Radix)
+ * ============================================================ */
+.xake-toast-viewport {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  z-index: var(--z-toast);
+  outline: none;
+}
+.xake-toast {
+  background: var(--colour-bg-elevated);
+  border: 1px solid var(--colour-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-3) var(--space-4);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-3);
+  animation: xake-slide-in-right var(--duration-medium) var(--ease-out-expo);
+}
+.xake-toast[data-tone="positive"] { border-color: var(--colour-positive-border); }
+.xake-toast[data-tone="negative"] { border-color: var(--colour-negative-border); }
+.xake-toast[data-tone="warning"] { border-color: var(--colour-warning-border); }
+.xake-toast[data-tone="info"] { border-color: var(--colour-info-border); }
+.xake-toast__title { font-weight: 600; color: var(--colour-text-primary); }
+.xake-toast__description { color: var(--colour-text-secondary); font-size: var(--text-dense); }
+.xake-toast__close { color: var(--colour-text-muted); align-self: start; }
+
+/* ============================================================
+ * Theme toggle
+ * ============================================================ */
+.xake-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--colour-bg-raised);
+  border: 1px solid var(--colour-border);
+  gap: 0;
+}
+.xake-theme-toggle__option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  color: var(--colour-text-secondary);
+  font-size: var(--text-dense);
+  font-weight: 500;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+.xake-theme-toggle__option:hover { color: var(--colour-text-primary); }
+.xake-theme-toggle__option[data-active] {
+  background: var(--colour-bg-elevated);
+  color: var(--colour-text-primary);
+  box-shadow: var(--shadow-xs);
+}
+.xake-theme-toggle__option:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.xake-theme-toggle__hint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--colour-text-muted);
+  letter-spacing: var(--tracking-wide);
+}
+
+/* ============================================================
+ * Motion keyframes
+ * ============================================================ */
+@keyframes xake-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes xake-scale-in {
+  from { opacity: 0; transform: translate(-50%, -48%) scale(0.98); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes xake-slide-in-right {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
