@@ -1,0 +1,26 @@
+entrypoint = "apps/web/app/page.tsx"
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[env]
+NODE_ENV = "development"
+XAKE_ENV = "paper"
+
+[deployment]
+run = ["pnpm", "start"]
+deploymentTarget = "autoscale"
+build = ["pnpm", "install", "--frozen-lockfile", "&&", "pnpm", "build"]
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[[ports]]
+localPort = 4000
+externalPort = 4000
+
+[[ports]]
+localPort = 5000
+externalPort = 5000
