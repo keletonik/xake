@@ -14,6 +14,12 @@ import { store } from "../lib/store.js";
  *
  * Mock is always on. Coinbase is behind a flag — once enabled, BTC/ETH/SOL
  * subscriptions go to Coinbase and fall back to mock on disconnect.
+ *
+ * On Vercel Functions the manager auto-starts lazily on first subscribe.
+ * The mock provider runs an interval while the function is alive; the
+ * browser reconnects via EventSource when the function terminates. On
+ * Replit/Node the standalone server explicitly starts the manager at
+ * boot so upstream WS connections can persist.
  */
 
 type QuoteHandler = (q: Quote) => void;
@@ -43,6 +49,10 @@ class StreamManager {
     this.mock.subscribeQuotes([], fanOut);
   }
 
+  async ensureStarted(): Promise<void> {
+    if (!this.started) await this.start();
+  }
+
   async stop(): Promise<void> {
     await this.mock.stop();
     if (this.coinbase) await this.coinbase.stop();
@@ -50,6 +60,11 @@ class StreamManager {
   }
 
   subscribe(symbols: string[], handler: QuoteHandler): () => void {
+    // Fire-and-forget start; the mock provider begins emitting as soon
+    // as the interval is installed. Awaiting is unnecessary because
+    // handler registration does not depend on tick emission.
+    void this.ensureStarted();
+
     const targets = symbols.length ? symbols : ["*"];
     const unsubs: Array<() => void> = [];
     for (const s of targets) {
@@ -77,7 +92,12 @@ class StreamManager {
   health() {
     return {
       mock: this.mock.health(),
-      coinbase: this.coinbase?.health() ?? { provider: "coinbase", status: "off", reconnectCount: 0, checkedAt: Date.now() }
+      coinbase: this.coinbase?.health() ?? {
+        provider: "coinbase",
+        status: "off",
+        reconnectCount: 0,
+        checkedAt: Date.now()
+      }
     };
   }
 }

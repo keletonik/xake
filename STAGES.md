@@ -106,63 +106,41 @@ Exit criteria: every `/app/*` page renders in the unified shell with persistent 
 
 ---
 
-## Stage 7 — Alerts worker
+## Stage 7+ — Public site, auth, settings, deployment parity, polish, platform adapters
 
-Goal: price, indicator, portfolio, and news alerts with dedupe and delivery.
-
-- [ ] BullMQ queues in `apps/worker` for evaluation and delivery
-- [ ] Alert definitions (Zod-validated) stored in Postgres
-- [ ] Evaluator loop consumes canonical ticks and fires alerts with cooldowns
-- [ ] Dedupe via condition-hash + cooldown window
-- [ ] Delivery channels: in-app toast, email stub, webhook stub
-- [ ] Alert history view with filter and acknowledge
-
-Exit criteria: a price alert fires once per cooldown, renders in-app, and appears in history with provenance.
-
----
-
-## Stage 8 — AI assistant service
-
-Goal: Claude-powered assistant as a guardrailed co-pilot.
-
-- [ ] `packages/ai-core` with prompt templates, tool schemas, guardrails
-- [ ] Claude service in `apps/api` with SSE streaming to browser
-- [ ] Default model Sonnet 4.6; Haiku 4.5 for lightweight tasks; Opus 4.7 gated
-- [ ] Prompt caching for system instructions, tool schemas, workspace context
-- [ ] Tools: `search_instruments`, `summarise_news`, `build_watchlist`, `draft_order`, `explain_chart`
-- [ ] Every tool action is logged; draft orders require explicit user confirmation
-- [ ] Graceful 429 handling with `retry-after` and model downgrade ladder
-- [ ] Structured output schemas for alerts, watchlists, and order drafts
-
-Exit criteria: assistant streams a response, proposes a watchlist, drafts an order, and cannot submit it without a confirmed user action.
+- [x] Premium marketing site: landing overhaul, `/features`, `/security`, `/pricing`, `/changelog`
+- [x] Polish primitives in `@xake/ui`: Skeleton, PaperBanner, CommandPalette (⌘K)
+- [x] Clerk auth in `apps/web/middleware.ts` with graceful demo-account fallback
+- [x] Sign-in / sign-up pages (Clerk when configured, explainer fallback otherwise)
+- [x] Settings page with tabs: appearance, workspace defaults, paper, AI, notifications, security
+- [x] `/v1/preferences` API (GET + PATCH) with per-account persistence
+- [x] `@xake/platform` package: `resolveTarget`, `describeCapabilities`, `MemoryQueue`, `InProcessCronAdapter`, `VercelCronAdapter`, `ConsoleObservability`
+- [x] `@xake/db` package: `postgres` connection factory, migration runner, repository interface, `PostgresPreferencesRepository` template
+- [x] Migration `0002_preferences.sql`
+- [x] `apps/api` split: `app.ts` (pure Hono) + `server.ts` (standalone)
+- [x] Hono app mounted at `apps/web/app/api/[[...path]]/route.ts` via `hono/vercel`
+- [x] `currentAccountId(c)` — reads `x-xake-user-id` header (set by middleware from Clerk) or falls back to demo
+- [x] `/v1/cron/evaluate-alerts` and `/v1/cron/health-sweep` endpoints, `CRON_SECRET` gated
+- [x] Stream manager auto-starts on first subscribe (Vercel-friendly)
+- [x] Status rail detects stale feed / API unreachable / provider down
+- [x] Integration tests hitting Hono via `app.request()` (health, watchlists, alerts, orders, preferences, cron)
+- [x] Playwright config + smoke E2E scaffold (`e2e/smoke.spec.ts`)
+- [x] `vercel.json` with function timeouts and cron schedules
+- [x] `.replit` documenting split topology
+- [x] Docs: `deployment/local`, `deployment/vercel`, `deployment/replit`, `deployment/adapters`
+- [x] `release-audit.md` (brutal) and `roadmap.md` (V1/V1.5/V2 gates)
 
 ---
 
-## Stage 9 — Landing, onboarding, settings
+## Future stages (post-V1)
 
-Goal: the public face and first-run experience.
+See [`docs/engineering/roadmap.md`](./docs/engineering/roadmap.md) for V1.5 and V2 gates. The biggest outstanding items:
 
-- [ ] Marketing landing page with hero, proof strip, feature bands, CTA
-- [ ] Onboarding flow: timezone, default risk, theme choice, starter watchlists
-- [ ] Settings surfaces: security, data entitlements, appearance, notifications, sessions
-- [ ] Mobile monitoring view for dashboard and watchlists
-- [ ] Accessibility pass (keyboard, focus, contrast, reduced-motion)
-
-Exit criteria: new user reaches their first chart in under 60 seconds from landing.
-
----
-
-## Stage 10 — Hardening, observability, deployment
-
-Goal: ship-ready posture.
-
-- [ ] OpenTelemetry traces across web, api, worker
-- [ ] Sentry for errors and performance
-- [ ] Immutable audit ledger for auth, entitlements, orders, AI actions
-- [ ] Postgres row-level security for workspace isolation
-- [ ] Secrets rotation runbook
-- [ ] Replit deployment config: Autoscale for stateless, Reserved VM for streams/workers
-- [ ] Incident runbooks for stream loss, stale feed, failed auth, rate limits
-- [ ] Load and chaos tests for reconnect, dedupe, and AI 429 handling
-
-Exit criteria: a clean deploy boots, traces are visible end-to-end, audit events are queryable, and reconnect/chaos tests pass.
+- Full Postgres persistence across every entity (interface is ready; only preferences is wired)
+- Durable queues (Redis/BullMQ or Vercel Queues beta)
+- OTel + Sentry integrations behind `@xake/platform`'s `ObservabilityAdapter`
+- Licensed real-time data for at least one asset class
+- Prompt caching on Anthropic calls once conversation persistence lands
+- Clerk enforcement in production (build-time assertion)
+- Playwright E2E in CI
+- Row-level security policies on Postgres

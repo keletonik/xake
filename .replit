@@ -1,4 +1,4 @@
-entrypoint = "apps/web/app/page.tsx"
+entrypoint = "apps/web/app/(marketing)/page.tsx"
 modules = ["nodejs-20"]
 
 [nix]
@@ -7,11 +7,13 @@ channel = "stable-24_05"
 [env]
 NODE_ENV = "development"
 XAKE_ENV = "paper"
+DEPLOY_TARGET = "replit"
+NEXT_PUBLIC_API_URL = "http://localhost:4000"
 
 [deployment]
-run = ["pnpm", "start"]
 deploymentTarget = "autoscale"
 build = ["pnpm", "install", "--frozen-lockfile", "&&", "pnpm", "build"]
+run = ["pnpm", "start"]
 
 [[ports]]
 localPort = 3000
@@ -24,3 +26,12 @@ externalPort = 4000
 [[ports]]
 localPort = 5000
 externalPort = 5000
+
+# Note: on Replit, run three processes:
+#   pnpm dev:api      — Hono API on :4000 (long-running, can hold WS upstream)
+#   pnpm dev:worker   — in-process cron + alert evaluation
+#   pnpm dev          — Next.js web on :3000 (fronted via NEXT_PUBLIC_API_URL)
+#
+# The embedded API at apps/web/app/api/[[...path]]/route.ts is still
+# present and works too, but the split topology is the preferred path
+# here so upstream WebSockets (Coinbase) can run continuously.

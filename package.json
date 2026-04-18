@@ -18,9 +18,12 @@
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "migrate": "pnpm --filter @xake/db migrate",
     "clean": "pnpm -r --if-present clean && rm -rf node_modules"
   },
   "devDependencies": {
+    "@playwright/test": "^1.47.2",
     "typescript": "^5.5.4",
     "vitest": "^2.1.2"
   }

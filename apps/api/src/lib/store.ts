@@ -34,6 +34,31 @@ import {
   type PositionMap
 } from "@xake/trading-core";
 
+export interface UserPreferences {
+  theme: "dark" | "darker" | "light" | "system";
+  timezone?: string;
+  defaultSymbol: string;
+  defaultTimeframe: string;
+  defaultWatchlistId?: string;
+  aiEnabled: boolean;
+  aiPremiumReasoning: boolean;
+  notificationsInApp: boolean;
+  notificationsEmail: boolean;
+  notificationsWebhook?: string;
+  paperStartingCash: number;
+}
+
+const DEFAULT_PREFS: UserPreferences = {
+  theme: "dark",
+  defaultSymbol: "AAPL",
+  defaultTimeframe: "1h",
+  aiEnabled: true,
+  aiPremiumReasoning: false,
+  notificationsInApp: true,
+  notificationsEmail: false,
+  paperStartingCash: 100_000
+};
+
 interface Account {
   id: string;
   balance: Balance;
@@ -44,6 +69,7 @@ interface Account {
   alerts: Alert[];
   alertEvents: AlertEvent[];
   audit: AuditEvent[];
+  preferences: UserPreferences;
 }
 
 const id = () => crypto.randomUUID();
@@ -75,12 +101,37 @@ const newAccount = (accountId: string): Account => ({
   ],
   alerts: [],
   alertEvents: [],
-  audit: []
+  audit: [],
+  preferences: { ...DEFAULT_PREFS }
 });
 
 export class Store {
   private accounts = new Map<string, Account>();
   private priceCache = new Map<string, number>();
+  private providerHealth: Record<string, unknown> = {};
+
+  listAllAccounts(): string[] {
+    return Array.from(this.accounts.keys());
+  }
+
+  getPreferences(accountId: string): UserPreferences {
+    return { ...this.getOrCreateAccount(accountId).preferences };
+  }
+
+  updatePreferences(accountId: string, patch: Partial<UserPreferences>): UserPreferences {
+    const a = this.getOrCreateAccount(accountId);
+    a.preferences = { ...a.preferences, ...patch };
+    this.audit(accountId, "preferences.update", undefined, patch as Record<string, unknown>);
+    return { ...a.preferences };
+  }
+
+  recordProviderHealth(health: unknown): void {
+    this.providerHealth = { at: Date.now(), ...(health as Record<string, unknown>) };
+  }
+
+  currentProviderHealth(): Record<string, unknown> {
+    return { ...this.providerHealth };
+  }
 
   getOrCreateAccount(accountId: string): Account {
     let a = this.accounts.get(accountId);

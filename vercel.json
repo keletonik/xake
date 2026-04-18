@@ -1,0 +1,22 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm --filter @xake/web build",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "framework": "nextjs",
+  "outputDirectory": "apps/web/.next",
+  "functions": {
+    "apps/web/app/api/[[...path]]/route.ts": {
+      "maxDuration": 60
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/v1/cron/evaluate-alerts",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/v1/cron/health-sweep",
+      "schedule": "*/10 * * * *"
+    }
+  ]
+}

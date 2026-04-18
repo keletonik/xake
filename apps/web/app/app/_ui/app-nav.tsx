@@ -12,7 +12,8 @@ const PRIMARY: Array<{ href: string; label: string; hint?: string }> = [
   { href: "/app/alerts", label: "Alerts", hint: "A" },
   { href: "/app/portfolio", label: "Portfolio", hint: "P" },
   { href: "/app/paper", label: "Paper ticket", hint: "T" },
-  { href: "/app/assistant", label: "Assistant", hint: "K" }
+  { href: "/app/assistant", label: "Assistant", hint: "K" },
+  { href: "/app/settings", label: "Settings", hint: "S" }
 ];
 
 export function AppNav() {

@@ -1,17 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { StatusBar, StatusItem } from "@xake/ui";
+import { Badge, StatusBar, StatusItem } from "@xake/ui";
 import { api } from "../../../lib/api-client";
 
 interface Health {
   env: string;
-  providers: { mock: { status: string; lastTickAt?: number }; coinbase: { status: string } };
+  providers: {
+    mock: { status: string; lastTickAt?: number; reconnectCount?: number };
+    coinbase: { status: string; reconnectCount?: number };
+  };
   claude: { enabled: boolean; defaultModel: string };
 }
 
+/**
+ * Status rail. Polls /v1/health every 15s and degrades loudly if:
+ *  - the API is unreachable
+ *  - the mock feed reports anything other than "ok"
+ *  - the last quote is older than 10s
+ *
+ * When any of those fire, the bar flips tone and surfaces a short
+ * machine-readable reason in a dedicated "issue" column.
+ */
+
 export function StatusRail() {
   const [health, setHealth] = useState<Health | null>(null);
+  const [apiReachable, setApiReachable] = useState(true);
   const [tz, setTz] = useState<string>("");
 
   useEffect(() => {
@@ -20,8 +34,9 @@ export function StatusRail() {
       try {
         const h = await api.get<Health>("/v1/health");
         setHealth(h);
+        setApiReachable(true);
       } catch {
-        setHealth(null);
+        setApiReachable(false);
       }
     };
     poll();
@@ -30,11 +45,27 @@ export function StatusRail() {
   }, []);
 
   const mockStatus = health?.providers.mock.status ?? "unknown";
-  const feedTone: "positive" | "negative" | "warning" | "info" = mockStatus === "ok" ? "positive" : mockStatus === "down" ? "negative" : "warning";
+  const lastTickAt = health?.providers.mock.lastTickAt;
+  const staleMs = lastTickAt ? Date.now() - lastTickAt : undefined;
+  const stale = staleMs !== undefined && staleMs > 10_000;
+  const feedTone: "positive" | "negative" | "warning" | "info" =
+    !apiReachable ? "negative" : mockStatus === "down" ? "negative" : stale ? "warning" : mockStatus === "ok" ? "positive" : "warning";
+
+  const issueLabel = !apiReachable
+    ? "api unreachable"
+    : mockStatus === "down"
+      ? "feed down"
+      : stale
+        ? `stale ${Math.round((staleMs ?? 0) / 1000)}s`
+        : undefined;
 
   return (
     <StatusBar>
-      <StatusItem label="feed" value={`mock · ${mockStatus}`} tone={feedTone} />
+      <StatusItem
+        label="feed"
+        value={`mock · ${!apiReachable ? "offline" : mockStatus}`}
+        tone={feedTone}
+      />
       <StatusItem
         label="ai"
         value={health?.claude.enabled ? health.claude.defaultModel : "mock"}
@@ -42,7 +73,15 @@ export function StatusRail() {
       />
       <StatusItem label="env" value={health?.env ?? "paper"} tone="warning" />
       <StatusItem label="tz" value={tz || "system"} />
-      <StatusItem label="build" value="stage-3-6" />
+      {issueLabel ? (
+        <span className="xake-statusbar__item">
+          <span>issue</span>
+          <Badge tone="negative" dot>
+            {issueLabel}
+          </Badge>
+        </span>
+      ) : null}
+      <StatusItem label="build" value="v0.3" />
     </StatusBar>
   );
 }

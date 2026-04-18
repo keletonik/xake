@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { ThemeProvider, THEME_BOOTSTRAP_SCRIPT, ToastProvider, TooltipProvider } from "@xake/ui";
@@ -6,10 +7,33 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "XAKE — premium trading cockpit",
-  description: "A dark, terminal-grade trading decision cockpit. Chart-first, modular, and built for operators."
+  description:
+    "A dark, terminal-grade trading decision cockpit. Chart-first, modular, and built for operators who want signal without the noise.",
+  metadataBase: new URL(process.env.APP_URL ?? "http://localhost:3000"),
+  openGraph: {
+    title: "XAKE",
+    description: "A premium trading cockpit. Analysis, paper trading, and a Claude-powered co-pilot.",
+    type: "website"
+  },
+  icons: { icon: "/favicon.ico" }
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+const CLERK_ENABLED = !!process.env.CLERK_SECRET_KEY && !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+async function ShellBody({ children }: { children: ReactNode }) {
+  const common = (
+    <ThemeProvider>
+      <TooltipProvider delayDuration={150}>
+        <ToastProvider>{children}</ToastProvider>
+      </TooltipProvider>
+    </ThemeProvider>
+  );
+  if (!CLERK_ENABLED) return common;
+  const { ClerkProvider } = await import("@clerk/nextjs");
+  return <ClerkProvider>{common}</ClerkProvider>;
+}
+
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en-AU"
@@ -24,11 +48,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
       </head>
       <body>
-        <ThemeProvider>
-          <TooltipProvider delayDuration={150}>
-            <ToastProvider>{children}</ToastProvider>
-          </TooltipProvider>
-        </ThemeProvider>
+        {/* @ts-expect-error Async Server Component */}
+        <ShellBody>{children}</ShellBody>
       </body>
     </html>
   );
