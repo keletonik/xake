@@ -57,61 +57,52 @@ Exit criteria: workspace shell renders with theme toggle and paper badge; all pr
 
 ---
 
-## Stage 3 — Auth and app chrome
+## Stage 3 — App chrome and workspace shell
 
-Goal: Clerk-based auth, session handling, protected routes, workspace provisioning.
+Goal: the real workspace lives at `/app/*` with top bar, left rail, main canvas, docked assistant, and status footer.
 
-- [ ] Clerk wired in `apps/web` with branded sign-in/up
-- [ ] Server-side session validation on every privileged route
-- [ ] Workspace model in Postgres (user → workspace → panels)
-- [ ] RBAC roles seeded: user, support, ops, compliance, admin
-- [ ] Empty dashboard renders for a signed-in user
+- [x] `/app` layout with `AppShell` composition
+- [x] Rail navigation across Dashboard, Markets, Charts, Watchlists, Alerts, Portfolio, Paper, Assistant
+- [x] Docked assistant side panel on every `/app/*` route
+- [x] Status rail polling `/v1/health` for feed + AI + env state
+- [x] Deferred: Clerk sign-in (enabled in Stage 3.5 once live trading is not a blocker)
 
-Exit criteria: sign up, sign in, sign out, land on a personal empty dashboard, log audit events for each.
+Exit criteria: every `/app/*` page renders in the unified shell with persistent env badge and assistant.
 
 ---
 
 ## Stage 4 — Data core and mock feed
 
-Goal: provider abstraction, normalised market data model, mock feed for deterministic dev.
-
-- [ ] `packages/data-core` with `MarketDataProvider`, `ExecutionVenue`, `PortfolioSource` interfaces
-- [ ] Canonical types: `Quote`, `Trade`, `Candle`, `OrderBookLevel`, `NewsItem`
-- [ ] In-memory mock provider with seeded instruments and deterministic ticks
-- [ ] WebSocket gateway in `apps/api` that fans out mock ticks to browser via SSE or WS
-- [ ] Every quote stamped with `source`, `feedClass`, `ageMs`
-
-Exit criteria: web shell subscribes to a mock instrument and renders a live ticker driven by the gateway.
+- [x] `packages/data-core` with `MarketDataProvider`, `NewsProvider`, `MacroCalendarProvider`, `PortfolioSource`, `ExecutionVenue` interfaces
+- [x] Canonical types: `Quote`, `Trade`, `Candle`, `OrderBookLevel/Snapshot`, `NewsItem`, `MacroEvent`, `ProviderHealth`
+- [x] `MockMarketDataProvider` with seeded catalogue and deterministic ticks
+- [x] `CoinbaseMarketDataProvider` (behind `ENABLE_COINBASE_FEED`) for crypto realtime via public WS
+- [x] SSE quote gateway `GET /v1/stream/quotes` fanning out normalised ticks
+- [x] Every quote stamped with `source`, `feedClass`, `ageMs`, `receivedAt`
 
 ---
 
 ## Stage 5 — Charts and watchlists
 
-Goal: the chart workspace and watchlist module.
-
-- [ ] `packages/charts` wrapper around Lightweight Charts
-- [ ] Candle, line, and area series with XAKE styling
-- [ ] Crosshair, timeframe switcher, instrument switcher
-- [ ] Watchlist grid (AG Grid) with sparklines and alert badges
-- [ ] Add-to-watchlist, reorder, tag, note
-- [ ] Keyboard navigation for watchlists (WAI-ARIA grid pattern)
-
-Exit criteria: user can pick an instrument from a watchlist, see it on the chart, switch timeframes, and navigate with the keyboard.
+- [x] `packages/charts` wrapper around TradingView Lightweight Charts
+- [x] Candle, line, area series with XAKE tokens
+- [x] Crosshair, timeframe switcher, instrument switcher, chart-type selector
+- [x] Watchlist CRUD with pinning, tags, notes
+- [x] Market explorer with instrument preview drawer, filters by asset class, add-to-watchlist
+- [x] Failure handling: no data, provider unavailable, stale feed, invalid symbol
 
 ---
 
-## Stage 6 — Paper trading engine
+## Stage 6 — Alerts, portfolio, paper trading, AI co-pilot
 
-Goal: deterministic, obvious, trustworthy paper trading.
-
-- [ ] `packages/trading-core` order model: side, type, TIF, brackets
-- [ ] Paper engine with configurable fill model (mid, touch, with slippage)
-- [ ] Paper ledger in Postgres: orders, fills, positions, balances, P&L
-- [ ] Reset flow with confirmation and audit event
-- [ ] Order ticket UI with pre-submit validation and consequence preview
-- [ ] Environment separation: paper vs (future) live is a first-class type
-
-Exit criteria: user places, modifies, and cancels paper orders; P&L and positions reconcile from the event ledger.
+- [x] `packages/trading-core` order model (side, type, TIF, status, reason)
+- [x] Paper engine: validation, slippage, limit matching on live ticks, buying-power enforcement, short-selling blocked
+- [x] Portfolio reducer with weighted-average cost, realised/unrealised P&L, equity calc
+- [x] Paper reset flow with audit event
+- [x] Alert engine: price, percentage move, watchlist conditions; dedupe via SHA-1 condition hash; cooldowns; firing events and history
+- [x] AI assistant: Claude Sonnet 4.6 default with Haiku fallback; SSE streaming; six tools; Zod-validated structured outputs; draft-confirm gating
+- [x] Docked assistant available on every workspace page
+- [x] Postgres schema in `infra/db/migrations/0001_init.sql` — mirrors the in-memory store exactly
 
 ---
 

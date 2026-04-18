@@ -38,15 +38,39 @@ XAKE starts life as an analysis and paper-trading platform. Live execution is de
 | Observability | OpenTelemetry + Sentry |
 | Deploy | Replit (Reserved VM for streams/workers, Autoscale for stateless) |
 
-## Local run (Stage 0 shell)
+## Local run
 
 ```bash
 # Requires Node 20+ and pnpm 9+
 pnpm install
-pnpm dev
+
+# Run all three services in parallel terminals:
+pnpm dev:api       # Hono API on :4000 (provides SSE and assistant streaming)
+pnpm dev:worker    # alert evaluator loop (heartbeats)
+pnpm dev           # Next.js on :3000 (web UI)
+
+# Run tests
+pnpm test
+
+# Optional: enable live crypto quotes
+ENABLE_COINBASE_FEED=true pnpm dev:api
+
+# Optional: enable real Claude traffic
+ANTHROPIC_API_KEY=sk-ant-... pnpm dev:api
 ```
 
-`pnpm dev` runs the web shell on `http://localhost:3000`. At Stage 0 the page only confirms the scaffold is wired up. Real features land from Stage 2 onwards.
+Visit:
+- `http://localhost:3000/` — landing
+- `http://localhost:3000/app` — workspace dashboard
+- `http://localhost:3000/app/markets` — market explorer
+- `http://localhost:3000/app/charts?symbol=BTC-USD` — chart workspace
+- `http://localhost:3000/app/watchlists` — lists
+- `http://localhost:3000/app/alerts` — alerts
+- `http://localhost:3000/app/portfolio` — paper portfolio
+- `http://localhost:3000/app/paper` — order ticket
+- `http://localhost:3000/app/assistant` — AI assistant
+- `http://localhost:3000/style-guide` — tokens reference
+- `http://localhost:3000/components` — primitive showcase
 
 ## Repository layout
 

@@ -16,10 +16,12 @@
     "start": "pnpm --filter @xake/web start",
     "lint": "pnpm -r --if-present lint",
     "typecheck": "pnpm -r --if-present typecheck",
-    "test": "pnpm -r --if-present test",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "clean": "pnpm -r --if-present clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.2"
   }
 }
