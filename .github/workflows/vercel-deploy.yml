@@ -1,0 +1,47 @@
+name: vercel-deploy
+
+# Fires Vercel's Deploy Hook directly on every push. This bypasses the
+# Vercel → GitHub App webhook entirely, so it keeps working even when
+# that integration is broken or misconfigured.
+#
+# Setup (once):
+#   1. Vercel → Project → Settings → Git → Deploy Hooks → Create Hook.
+#      Name: "trunk"
+#      Branch: claude/xake-trading-platform-5th8J
+#      Copy the URL it generates.
+#   2. GitHub → repo → Settings → Secrets and variables → Actions.
+#      Add secret named VERCEL_DEPLOY_HOOK_URL with the URL above.
+#
+# After that, every push to the branch triggers Vercel automatically.
+
+on:
+  push:
+    branches:
+      - claude/xake-trading-platform-5th8J
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Fire Vercel deploy hook
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::warning::VERCEL_DEPLOY_HOOK_URL is not set; skipping Vercel trigger."
+            echo "Add the secret per .github/workflows/vercel-deploy.yml setup instructions."
+            exit 0
+          fi
+          echo "Triggering Vercel deploy hook for commit ${GITHUB_SHA:0:8}..."
+          response="$(curl -sS -o /tmp/vercel-response -w "%{http_code}" -X POST "$HOOK")"
+          echo "HTTP $response"
+          cat /tmp/vercel-response
+          echo
+          if [ "$response" -ge 200 ] && [ "$response" -lt 300 ]; then
+            echo "Deploy triggered successfully."
+          else
+            echo "::error::Deploy hook returned $response"
+            exit 1
+          fi
