@@ -3,12 +3,14 @@
  *
  * Designed for both long-running hosts (Replit Reserved VM, Fly) and
  * serverless functions (Vercel). On Vercel the connection is lazily
- * established per function invocation via `postgres()` with `max: 1`
- * and `idle_timeout: 10` — standard serverless settings.
+ * established per function invocation with `max: 1` / `idle_timeout: 10`.
  *
- * The in-memory store in apps/api remains available as a fallback for
- * local development without a DATABASE_URL. Swap one for the other by
- * calling `makeRepository({ databaseUrl })`.
+ * Note: the migration runner lives at `./migrate.js` and imports Node
+ * built-ins (`node:fs`, `node:path`). It is NOT re-exported here — the
+ * CLI is invoked via `pnpm --filter @xake/db migrate`, which runs
+ * migrate.ts directly under `tsx`. Keeping it out of the barrel means
+ * client bundles that import `@xake/db` (for repository types) do not
+ * pull Node-only modules into the browser.
  */
 
 import postgres from "postgres";
@@ -50,5 +52,4 @@ const isServerless = (): boolean => {
   return process.env.VERCEL === "1" || !!process.env.VERCEL_URL || process.env.DEPLOY_TARGET === "vercel";
 };
 
-export { loadMigrations, runMigrations } from "./migrate.js";
 export * from "./repositories/index.js";

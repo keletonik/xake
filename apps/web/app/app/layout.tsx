@@ -6,11 +6,13 @@ import { StatusRail } from "./_ui/status-rail";
 import { AssistantDock } from "./_ui/assistant-dock";
 import { AppCommandPalette } from "./_ui/command-palette";
 import { TopbarUser } from "./_ui/topbar-user";
+import { DemoStrip } from "./_ui/demo-strip";
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <PaperBanner env="paper" />
+      <DemoStrip />
       <div className="xake-shell" style={{ gridTemplateColumns: "var(--rail-w) 1fr" }}>
         <header className="xake-shell__topbar">
           <TopbarGroup>

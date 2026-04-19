@@ -1,7 +1,11 @@
+import { demoHeaders } from "./demo-mode";
+
 /**
  * Tiny, typed API client. All requests go through the Next.js rewrite
  * (/api/*) so the browser never hits the backend directly, and secrets
- * stay server-side.
+ * stay server-side. When demo mode is active, every request carries
+ * the `x-xake-demo-id` header so the server scopes state to the
+ * isolated demo account.
  */
 
 export class ApiError extends Error {
@@ -15,6 +19,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     ...init,
     headers: {
       "content-type": "application/json",
+      ...demoHeaders(),
       ...(init?.headers ?? {})
     },
     cache: "no-store"

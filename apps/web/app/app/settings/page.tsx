@@ -20,6 +20,7 @@ import {
   ThemeToggle
 } from "@xake/ui";
 import { api } from "../../../lib/api-client";
+import { disableDemoMode, enableDemoMode, isDemoActive } from "../../../lib/demo-mode";
 
 interface Preferences {
   theme: "dark" | "darker" | "light" | "system";
@@ -215,15 +216,67 @@ export default function SettingsPage() {
         </TabsContent>
 
         <TabsContent value="security">
+          <Panel title="Account mode">
+            <DemoSection />
+          </Panel>
           <Panel title="Security">
             <EmptyState
-              title="Security surfaces land in Stage 10"
-              description="Sessions, step-up auth, secret rotation logs, and RLS policy state appear here once Postgres is primary."
+              title="Session surfaces land in Stage 10"
+              description="Step-up auth, session list, secret rotation logs, and RLS policy state appear here once Postgres is primary."
             />
           </Panel>
         </TabsContent>
       </Tabs>
     </>
+  );
+}
+
+function DemoSection() {
+  const [active, setActive] = useState(false);
+  useEffect(() => setActive(isDemoActive()), []);
+  if (active) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <Badge tone="info" dot>
+          Demo account active
+        </Badge>
+        <p style={{ color: "var(--colour-text-secondary)", fontSize: "var(--text-dense)", margin: 0 }}>
+          You're using an isolated demo account. Exiting wipes the demo id and cookie from this browser. Your real account state (if any) is unaffected.
+        </p>
+        <div>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => {
+              disableDemoMode();
+              setActive(false);
+              location.assign("/");
+            }}
+          >
+            Exit demo
+          </Button>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <p style={{ color: "var(--colour-text-secondary)", fontSize: "var(--text-dense)", margin: 0 }}>
+        Start an isolated demo account scoped to this browser. Virtual cash, virtual fills, no real money. Exit any time from this screen.
+      </p>
+      <div>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={() => {
+            enableDemoMode();
+            location.reload();
+          }}
+        >
+          Start demo trading
+        </Button>
+      </div>
+    </div>
   );
 }
 

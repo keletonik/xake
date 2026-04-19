@@ -1,20 +1,39 @@
-import crypto from "node:crypto";
 import type { Alert, AlertCondition, AlertDraft, AlertEvent } from "./types";
 
 /**
  * Alert evaluation. Pure functions over quote state. The worker loop
  * feeds ticks in; this module decides fire/ignore and formats events.
  *
- * Dedupe: each alert has a dedupeHash derived from its condition.
- * Duplicate alert creation (same account + same condition) is
- * prevented at the store level by checking the hash.
- * Cooldown: after firing, an alert must wait `cooldownSeconds` before
- * firing again.
+ * Isomorphic: this file is consumed by client components via the
+ * package barrel, so it must not import Node-only modules like
+ * `node:crypto`. We use `globalThis.crypto.randomUUID()` (available
+ * in modern browsers and Node 19+) and a small pure-JS hash for the
+ * dedupe key. The dedupe hash does not need cryptographic strength —
+ * collisions are resolved at the store layer by a unique constraint.
  */
+
+const uuid = (): string => {
+  const g = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto;
+  if (g?.randomUUID) return g.randomUUID();
+  // RFC 4122-ish fallback for ancient runtimes.
+  const rnd = () => Math.floor(Math.random() * 0xffffffff).toString(16).padStart(8, "0");
+  return `${rnd()}-${rnd().slice(0, 4)}-4${rnd().slice(0, 3)}-${rnd().slice(0, 4)}-${rnd()}${rnd().slice(0, 4)}`;
+};
+
+// FNV-1a 32-bit hash, rendered as 8-char hex. Deterministic, collision-resistant
+// enough to key dedupe lookups; the DB unique constraint is the real guard.
+const fnv1a = (input: string): string => {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+  }
+  return h.toString(16).padStart(8, "0");
+};
 
 export const computeDedupeHash = (accountId: string, condition: AlertCondition): string => {
   const canonical = JSON.stringify({ accountId, condition });
-  return crypto.createHash("sha1").update(canonical).digest("hex");
+  return fnv1a(canonical);
 };
 
 export interface QuoteSnapshot {
@@ -68,7 +87,7 @@ export const evaluateQuote = (
   alerts: readonly Alert[],
   watchlists: WatchlistIndex,
   now: number = Date.now(),
-  idFactory: () => string = () => crypto.randomUUID()
+  idFactory: () => string = uuid
 ): AlertEvaluationResult => {
   const fired: AlertEvent[] = [];
   const updated: Alert[] = [];
@@ -95,7 +114,7 @@ export const evaluateQuote = (
 export const buildAlert = (
   draft: AlertDraft,
   accountId: string,
-  idFactory: () => string = () => crypto.randomUUID(),
+  idFactory: () => string = uuid,
   now: number = Date.now()
 ): Alert => ({
   ...draft,

@@ -31,6 +31,22 @@ app.use(
   })
 );
 
+// Demo-mode bridge: EventSource can't set custom headers, so the web
+// layer writes the demo id to a cookie. Promote the cookie to the
+// header the route handlers already read, so SSE and REST share one
+// identity resolution path.
+app.use("*", async (c, next) => {
+  if (!c.req.header("x-xake-demo-id")) {
+    const cookie = c.req.header("cookie") ?? "";
+    const match = cookie.split(";").map((s) => s.trim()).find((s) => s.startsWith("xake-demo-id="));
+    if (match) {
+      const value = decodeURIComponent(match.slice("xake-demo-id=".length));
+      if (value) c.req.raw.headers.set("x-xake-demo-id", value);
+    }
+  }
+  await next();
+});
+
 app.route("/", healthRoutes);
 app.route("/", instrumentsRoutes);
 app.route("/", streamRoutes);

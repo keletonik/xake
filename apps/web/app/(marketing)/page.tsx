@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Badge, Button, Card, CardDescription, CardMeta, CardTitle, SectionHeader, Separator } from "@xake/ui";
+import { DemoCta } from "../_marketing/demo-cta";
 
 export default function Landing() {
   return (
@@ -21,9 +22,7 @@ export default function Landing() {
             <Link href="/app">
               <Button variant="primary" size="lg">Launch workspace</Button>
             </Link>
-            <Link href="/app/paper">
-              <Button variant="secondary" size="lg">Try paper mode</Button>
-            </Link>
+            <DemoCta size="lg" />
           </div>
           <div className="mkt-hero__proof">
             <Badge tone="warning" dot>Paper environment by default</Badge>
@@ -137,17 +136,54 @@ export default function Landing() {
         </div>
       </section>
 
+      <section className="mkt-container">
+        <SectionHeader
+          eyebrow="No sign-up required"
+          title="Try demo trading"
+          description="One click spins up an isolated demo account in your browser. $100,000 in virtual cash, the full workspace, the Claude co-pilot — nothing touches a real account. Your demo state lives on the server, scoped to your browser, clearly labelled throughout the app."
+          actions={<DemoCta />}
+        />
+        <div className="mkt-grid mkt-grid--2" style={{ marginTop: "var(--space-4)" }}>
+          <Card>
+            <CardMeta>Isolated</CardMeta>
+            <CardTitle>Your demo never mingles</CardTitle>
+            <CardDescription>
+              Each browser gets a stable demo id. Two tabs, two isolated demo portfolios. No shared state with other visitors.
+            </CardDescription>
+          </Card>
+          <Card>
+            <CardMeta>Reversible</CardMeta>
+            <CardTitle>Exit cleanly any time</CardTitle>
+            <CardDescription>
+              Exit demo in Settings or from the banner. The demo id and cookie are wiped; no residual state follows you.
+            </CardDescription>
+          </Card>
+          <Card>
+            <CardMeta>Honest</CardMeta>
+            <CardTitle>Demo mode is never hidden</CardTitle>
+            <CardDescription>
+              A persistent banner and status-rail badge confirm demo mode everywhere. You will not confuse it for a real account.
+            </CardDescription>
+          </Card>
+          <Card>
+            <CardMeta>Full-feature</CardMeta>
+            <CardTitle>Every surface, same design</CardTitle>
+            <CardDescription>
+              Markets, charts, watchlists, alerts, portfolio, paper ticket, and the AI assistant are all live in demo mode.
+            </CardDescription>
+          </Card>
+        </div>
+      </section>
+
       <section className="mkt-container mkt-cta">
         <div className="mkt-cta__card">
           <h2>Ready to see the cockpit?</h2>
           <p>Paper environment is free. No credit card, no broker connection.</p>
-          <div style={{ display: "inline-flex", gap: 12 }}>
+          <div style={{ display: "inline-flex", gap: 12, flexWrap: "wrap" }}>
             <Link href="/app">
               <Button variant="primary" size="lg">Launch workspace</Button>
             </Link>
-            <Link href="/components">
-              <Button variant="secondary" size="lg">See the components</Button>
-            </Link>
+            <DemoCta />
           </div>
         </div>
       </section>

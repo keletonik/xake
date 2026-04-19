@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Badge, StatusBar, StatusItem } from "@xake/ui";
 import { api } from "../../../lib/api-client";
+import { isDemoActive } from "../../../lib/demo-mode";
 
 interface Health {
   env: string;
@@ -11,6 +12,7 @@ interface Health {
     coinbase: { status: string; reconnectCount?: number };
   };
   claude: { enabled: boolean; defaultModel: string };
+  auth?: { clerkEnabled?: boolean; mode?: "demo" | "user" | "fallback" };
 }
 
 /**
@@ -27,9 +29,11 @@ export function StatusRail() {
   const [health, setHealth] = useState<Health | null>(null);
   const [apiReachable, setApiReachable] = useState(true);
   const [tz, setTz] = useState<string>("");
+  const [demo, setDemo] = useState(false);
 
   useEffect(() => {
     setTz(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    setDemo(isDemoActive());
     const poll = async () => {
       try {
         const h = await api.get<Health>("/v1/health");
@@ -72,6 +76,11 @@ export function StatusRail() {
         tone={health?.claude.enabled ? "info" : "warning"}
       />
       <StatusItem label="env" value={health?.env ?? "paper"} tone="warning" />
+      <StatusItem
+        label="account"
+        value={demo ? "demo" : health?.auth?.mode === "user" ? "signed-in" : "fallback"}
+        tone={demo ? "info" : health?.auth?.mode === "user" ? "positive" : "warning"}
+      />
       <StatusItem label="tz" value={tz || "system"} />
       {issueLabel ? (
         <span className="xake-statusbar__item">
