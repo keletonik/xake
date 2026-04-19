@@ -1,4 +1,4 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
 
 /**
  * Workspace middleware.
@@ -21,30 +21,33 @@ import { NextResponse, type NextRequest } from "next/server";
 const CLERK_ENABLED = !!process.env.CLERK_SECRET_KEY;
 const DEMO_ID = process.env.DEMO_ACCOUNT_ID ?? "demo-account";
 
+type NextMiddlewareFn = (
+  req: NextRequest,
+  event: NextFetchEvent
+) => Promise<NextResponse | undefined> | NextResponse | undefined;
+
 const hasDemoCookie = (req: NextRequest): boolean =>
   !!req.cookies.get("xake-demo-id")?.value;
 
-let clerkMiddlewareImpl:
-  | ((req: NextRequest) => Promise<NextResponse> | NextResponse)
-  | null = null;
+const demoFallback = (req: NextRequest): NextResponse => {
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-xake-user-id", DEMO_ID);
+  return NextResponse.next({ request: { headers: requestHeaders } });
+};
 
-if (CLERK_ENABLED) {
+const buildClerkHandler = async (): Promise<NextMiddlewareFn | null> => {
+  if (!CLERK_ENABLED) return null;
   try {
     const mod = await import("@clerk/nextjs/server");
-    const handler = mod.clerkMiddleware(async (auth, req: NextRequest) => {
+    return mod.clerkMiddleware(async (auth, req) => {
       const path = req.nextUrl.pathname;
       const isApp = path.startsWith("/app");
       const isApi = path.startsWith("/api");
-      const demo = hasDemoCookie(req);
-
       if (!isApp && !isApi) return NextResponse.next();
 
-      const session = await auth();
+      if (hasDemoCookie(req)) return NextResponse.next();
 
-      if (demo) {
-        // Demo sessions skip Clerk enforcement and ride on the cookie.
-        return NextResponse.next();
-      }
+      const session = await auth();
 
       if (!session?.userId) {
         if (isApi) {
@@ -61,20 +64,23 @@ if (CLERK_ENABLED) {
       const requestHeaders = new Headers(req.headers);
       requestHeaders.set("x-xake-user-id", session.userId);
       return NextResponse.next({ request: { headers: requestHeaders } });
-    });
-    clerkMiddlewareImpl = handler as unknown as typeof clerkMiddlewareImpl;
+    }) as unknown as NextMiddlewareFn;
   } catch {
-    clerkMiddlewareImpl = null;
+    return null;
   }
-}
+};
 
-export async function middleware(req: NextRequest) {
-  if (clerkMiddlewareImpl) return clerkMiddlewareImpl(req);
+// Initialise once per Edge worker cold start. Awaited inside the
+// exported middleware so Next always receives a valid function.
+const clerkHandlerPromise: Promise<NextMiddlewareFn | null> = buildClerkHandler();
 
-  // Demo fallback stamps request headers so the Hono app can scope state.
-  const requestHeaders = new Headers(req.headers);
-  requestHeaders.set("x-xake-user-id", DEMO_ID);
-  return NextResponse.next({ request: { headers: requestHeaders } });
+export async function middleware(req: NextRequest, event: NextFetchEvent) {
+  const clerk = await clerkHandlerPromise;
+  if (clerk) {
+    const response = await clerk(req, event);
+    return response ?? NextResponse.next();
+  }
+  return demoFallback(req);
 }
 
 export const config = {

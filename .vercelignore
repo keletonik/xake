@@ -1,0 +1,8 @@
+.replit
+replit.nix
+e2e
+playwright.config.ts
+playwright-report
+test-results
+docs
+infra/db/migrations

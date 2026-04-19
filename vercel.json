@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "pnpm --filter @xake/web build",
-  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm --filter @xake/web build && node scripts/check-client-bundle.mjs",
+  "installCommand": "pnpm install --no-frozen-lockfile",
   "framework": "nextjs",
   "outputDirectory": "apps/web/.next",
   "crons": [

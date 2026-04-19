@@ -5,8 +5,9 @@
  * server uses.
  *
  * The Hono app registers routes without a `/api` prefix (so it can run
- * standalone on port 4000). Here we wrap the Vercel adapter so incoming
- * Next.js requests strip the `/api` prefix before Hono routing.
+ * standalone on port 4000). Here we strip the `/api` prefix before
+ * forwarding, carrying the method, headers, and body through with a
+ * single new Request object.
  */
 
 import { app } from "@xake/api";
@@ -17,14 +18,26 @@ export const maxDuration = 60;
 
 const handler = async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
-  // Strip the leading /api so Hono routes (/v1/*) match.
   if (url.pathname.startsWith("/api/")) {
     url.pathname = url.pathname.slice(4) || "/";
   } else if (url.pathname === "/api") {
     url.pathname = "/";
   }
-  const rewritten = new Request(url, req);
-  return app.fetch(rewritten);
+
+  const init: RequestInit & { duplex?: "half" } = {
+    method: req.method,
+    headers: req.headers,
+    redirect: "manual",
+    signal: req.signal
+  };
+
+  if (req.method !== "GET" && req.method !== "HEAD") {
+    init.body = req.body;
+    // Node 18+ fetch requires `duplex: "half"` when streaming a body.
+    init.duplex = "half";
+  }
+
+  return app.fetch(new Request(url, init));
 };
 
 export const GET = handler;
