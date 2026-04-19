@@ -1,9 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "bash scripts/vercel-build.sh",
-  "installCommand": "bash scripts/vercel-install.sh",
+  "rootDirectory": "apps/web",
+  "buildCommand": "cd ../.. && bash scripts/vercel-build.sh",
+  "installCommand": "cd ../.. && bash scripts/vercel-install.sh",
   "framework": "nextjs",
-  "outputDirectory": "apps/web/.next",
+  "outputDirectory": ".next",
   "crons": [
     {
       "path": "/api/v1/cron/evaluate-alerts",
