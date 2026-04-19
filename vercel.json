@@ -4,11 +4,6 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",
   "outputDirectory": "apps/web/.next",
-  "functions": {
-    "apps/web/app/api/[[...path]]/route.ts": {
-      "maxDuration": 60
-    }
-  },
   "crons": [
     {
       "path": "/api/v1/cron/evaluate-alerts",
