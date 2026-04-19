@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
-# Vercel build step — uses the same npx-pinned pnpm as the install
-# step so there is zero ambiguity about which pnpm is building what.
+# Vercel build — reuses the static pnpm installed by vercel-install.sh.
 
 set -eo pipefail
 
-echo "[xake] building @xake/web with pnpm@9.12.0 via npx"
-npx --yes pnpm@9.12.0 --filter @xake/web run build
+PNPM_BIN_DIR="$HOME/.xake-pnpm-bin"
+if [ -x "$PNPM_BIN_DIR/pnpm" ]; then
+  export PATH="$PNPM_BIN_DIR:$PATH"
+fi
+
+echo "[xake] pnpm: $(pnpm --version 2>/dev/null || echo 'not found; install step did not run?')"
+
+echo "[xake] building @xake/web"
+pnpm --filter @xake/web run build
 
 echo "[xake] running client-bundle guard"
 node scripts/check-client-bundle.mjs
