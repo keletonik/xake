@@ -4,12 +4,16 @@ import { useState } from "react";
 import { Badge, Button, Input, Panel, Separator } from "@xake/ui";
 import { useAssistantStream } from "../../../lib/use-assistant-stream";
 import { useWorkspace } from "../../../lib/workspace-store";
+import { usePreferences } from "../../../lib/use-preferences";
 import { AssistantToolCard } from "./assistant-tool-card";
 
 export function AssistantDock() {
   const { activeSymbol, activeTimeframe, selectedWatchlistId } = useWorkspace();
   const { messages, toolCalls, send, cancel, status, errorMessage } = useAssistantStream();
+  const prefs = usePreferences();
   const [input, setInput] = useState("");
+
+  if (!prefs.aiEnabled) return null;
 
   return (
     <aside

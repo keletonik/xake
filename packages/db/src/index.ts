@@ -53,3 +53,4 @@ const isServerless = (): boolean => {
 };
 
 export * from "./repositories/index.js";
+export * from "./factory.js";

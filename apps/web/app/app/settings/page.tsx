@@ -21,6 +21,7 @@ import {
 } from "@xake/ui";
 import { api } from "../../../lib/api-client";
 import { disableDemoMode, enableDemoMode, isDemoActive } from "../../../lib/demo-mode";
+import { notifyPreferencesUpdated } from "../../../lib/use-preferences";
 
 interface Preferences {
   theme: "dark" | "darker" | "light" | "system";
@@ -53,6 +54,7 @@ export default function SettingsPage() {
     try {
       const r = await api.patch<{ preferences: Preferences }>("/v1/preferences", patch);
       setPrefs(r.preferences);
+      notifyPreferencesUpdated(r.preferences);
       setSavedAt(Date.now());
     } finally {
       setSaving(false);

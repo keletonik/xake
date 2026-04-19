@@ -3,16 +3,18 @@ import Link from "next/link";
 import { AppBrand, PaperBanner, ThemeToggle, TopbarGroup } from "@xake/ui";
 import { AppNav } from "./_ui/app-nav";
 import { StatusRail } from "./_ui/status-rail";
-import { AssistantDock } from "./_ui/assistant-dock";
 import { AppCommandPalette } from "./_ui/command-palette";
 import { TopbarUser } from "./_ui/topbar-user";
 import { DemoStrip } from "./_ui/demo-strip";
+import { WorkspaceMain } from "./_ui/workspace-main";
+import { PreferencesBootstrap } from "./_ui/preferences-bootstrap";
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <PaperBanner env="paper" />
       <DemoStrip />
+      <PreferencesBootstrap />
       <div className="xake-shell" style={{ gridTemplateColumns: "var(--rail-w) 1fr" }}>
         <header className="xake-shell__topbar">
           <TopbarGroup>
@@ -30,15 +32,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <aside className="xake-shell__rail" aria-label="Primary">
           <AppNav />
         </aside>
-        <main
-          className="xake-shell__main"
-          style={{ position: "relative", display: "grid", gridTemplateColumns: "1fr var(--drawer-w)" }}
-        >
-          <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-            {children}
-          </div>
-          <AssistantDock />
-        </main>
+        <WorkspaceMain>{children}</WorkspaceMain>
         <StatusRail />
       </div>
     </>

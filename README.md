@@ -1,6 +1,6 @@
 # XAKE
 
-A premium, dark-theme trading decision cockpit. Chart-first, modular, and built for operators who want signal without the noise.
+A premium, dark-theme trading decision cockpit. Chart-first, disciplined, and built for operators who want signal without the noise.
 
 XAKE starts life as an analysis and paper-trading platform. Live execution is deliberately out of scope until licensed partners, data entitlements, and regulatory posture are in place. That separation is a feature, not a limitation — it lets us ship a serious product without pretending to be a broker.
 

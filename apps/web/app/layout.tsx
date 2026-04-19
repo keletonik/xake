@@ -8,7 +8,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "XAKE — premium trading cockpit",
   description:
-    "A dark, terminal-grade trading decision cockpit. Chart-first, modular, and built for operators who want signal without the noise.",
+    "A dark, terminal-grade trading decision cockpit. Chart-first, disciplined, and built for operators who want signal without the noise.",
   metadataBase: new URL(process.env.APP_URL ?? "http://localhost:3000"),
   openGraph: {
     title: "XAKE",

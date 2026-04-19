@@ -16,7 +16,7 @@ export default function Landing() {
           </h1>
           <p className="mkt-hero__lede">
             XAKE is a dark, terminal-grade decision cockpit for market operators. Chart-first,
-            modular, and wired to a Claude-powered co-pilot that drafts — you decide.
+            disciplined, and wired to a Claude-powered co-pilot that drafts — you decide.
           </p>
           <div className="mkt-hero__ctas">
             <Link href="/app">

@@ -1,5 +1,3 @@
-import WebSocket from "ws";
-import { CATALOGUE } from "../instruments/catalogue";
 import type { ProviderHealth, Quote } from "../types";
 import type { MarketDataProvider, Unsubscribe } from "./types";
 
@@ -10,19 +8,29 @@ import type { MarketDataProvider, Unsubscribe } from "./types";
  * development; always verify the latest terms before shipping to
  * paying users, and respect their rate/connection limits.
  *
- * Only a subset of the mock provider surface is implemented here —
- * live quotes via subscribeQuotes. Historical candles fall back to the
- * mock provider so the chart workspace always has something to show.
+ * The `ws` dependency is loaded lazily on `start()` so bundlers that
+ * drag the package into a serverless function (Vercel) do not pay for
+ * its cost unless the feed is actually turned on.
  */
 
 const WS_URL = "wss://ws-feed.exchange.coinbase.com";
 const PROVIDER_NAME = "coinbase";
 
+type WsInstance = {
+  readonly readyState: number;
+  on(event: "open" | "message" | "close" | "error", listener: (arg?: unknown) => void): void;
+  send(payload: string): void;
+  close(): void;
+};
+type WsConstructor = new (url: string) => WsInstance;
+type WsModule = { default: WsConstructor; OPEN: number };
+
 export class CoinbaseMarketDataProvider implements MarketDataProvider {
   readonly name = PROVIDER_NAME;
   readonly supportedAssetClasses = ["crypto"] as const;
 
-  private ws: WebSocket | null = null;
+  private wsModule: WsModule | null = null;
+  private ws: WsInstance | null = null;
   private readonly subscribers = new Map<string, Set<(q: Quote) => void>>();
   private reconnectCount = 0;
   private lastTickAt: number | undefined;
@@ -31,6 +39,10 @@ export class CoinbaseMarketDataProvider implements MarketDataProvider {
 
   async start(): Promise<void> {
     this.stopping = false;
+    if (!this.wsModule) {
+      const mod = (await import("ws")) as unknown as WsModule;
+      this.wsModule = mod;
+    }
     this.connect();
   }
 
@@ -54,6 +66,7 @@ export class CoinbaseMarketDataProvider implements MarketDataProvider {
   }
 
   async listInstruments() {
+    const { CATALOGUE } = await import("../instruments/catalogue");
     return CATALOGUE.filter((i) => i.venue === "COINBASE").map((i) => ({
       id: i.id,
       symbol: i.symbol,
@@ -73,8 +86,6 @@ export class CoinbaseMarketDataProvider implements MarketDataProvider {
   }
 
   async getQuote(): Promise<Quote | null> {
-    // Real provider: no synchronous snapshot. Consumers should subscribe.
-    // Historical snapshot queries go through the mock provider fallback at the aggregator level.
     return null;
   }
 
@@ -98,9 +109,9 @@ export class CoinbaseMarketDataProvider implements MarketDataProvider {
   }
 
   private connect(): void {
-    if (this.stopping) return;
+    if (this.stopping || !this.wsModule) return;
     try {
-      this.ws = new WebSocket(WS_URL);
+      this.ws = new this.wsModule.default(WS_URL);
     } catch {
       this.scheduleReconnect();
       return;
@@ -111,10 +122,10 @@ export class CoinbaseMarketDataProvider implements MarketDataProvider {
       this.resubscribe();
     });
 
-    this.ws.on("message", (buf: WebSocket.RawData) => {
+    this.ws.on("message", (buf) => {
       try {
-        const msg = JSON.parse(buf.toString());
-        this.handleMessage(msg);
+        const str = typeof buf === "string" ? buf : String(buf);
+        this.handleMessage(JSON.parse(str));
       } catch {
         // ignore malformed payloads
       }
@@ -137,7 +148,7 @@ export class CoinbaseMarketDataProvider implements MarketDataProvider {
   }
 
   private resubscribe(): void {
-    if (this.ws?.readyState !== WebSocket.OPEN) return;
+    if (!this.wsModule || !this.ws || this.ws.readyState !== this.wsModule.OPEN) return;
     const productIds = Array.from(this.subscribers.keys());
     if (productIds.length === 0) return;
     this.ws.send(

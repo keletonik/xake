@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Badge, StatusBar, StatusItem } from "@xake/ui";
 import { api } from "../../../lib/api-client";
 import { isDemoActive } from "../../../lib/demo-mode";
+import { usePreferences } from "../../../lib/use-preferences";
 
 interface Health {
   env: string;
@@ -26,13 +27,14 @@ interface Health {
  */
 
 export function StatusRail() {
+  const prefs = usePreferences();
   const [health, setHealth] = useState<Health | null>(null);
   const [apiReachable, setApiReachable] = useState(true);
-  const [tz, setTz] = useState<string>("");
+  const [browserTz, setBrowserTz] = useState<string>("");
   const [demo, setDemo] = useState(false);
 
   useEffect(() => {
-    setTz(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    setBrowserTz(Intl.DateTimeFormat().resolvedOptions().timeZone);
     setDemo(isDemoActive());
     const poll = async () => {
       try {
@@ -81,7 +83,7 @@ export function StatusRail() {
         value={demo ? "demo" : health?.auth?.mode === "user" ? "signed-in" : "fallback"}
         tone={demo ? "info" : health?.auth?.mode === "user" ? "positive" : "warning"}
       />
-      <StatusItem label="tz" value={tz || "system"} />
+      <StatusItem label="tz" value={prefs.timezone || browserTz || "system"} />
       {issueLabel ? (
         <span className="xake-statusbar__item">
           <span>issue</span>

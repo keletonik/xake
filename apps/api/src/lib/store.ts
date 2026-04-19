@@ -162,15 +162,19 @@ export class Store {
 
   resetPaperBalance(accountId: string): void {
     const a = this.getOrCreateAccount(accountId);
+    const startingCash =
+      typeof a.preferences.paperStartingCash === "number" && a.preferences.paperStartingCash > 0
+        ? a.preferences.paperStartingCash
+        : DEFAULT_ENGINE_CONFIG.startingCash;
     a.balance = {
       currency: DEFAULT_ENGINE_CONFIG.currency,
-      cash: DEFAULT_ENGINE_CONFIG.startingCash,
-      buyingPower: DEFAULT_ENGINE_CONFIG.startingCash
+      cash: startingCash,
+      buyingPower: startingCash
     };
     a.positions = {};
     a.orders = [];
     a.fills = [];
-    this.audit(accountId, "paper.reset", undefined, {});
+    this.audit(accountId, "paper.reset", undefined, { startingCash });
   }
 
   submitOrder(accountId: string, draft: unknown): { order: Order; fills: Fill[] } | { error: string } {
