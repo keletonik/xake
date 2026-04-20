@@ -1,60 +1,29 @@
-import Link from "next/link";
+import { MarketExplorer } from "@/components/market-explorer";
 import { getMarketProvider } from "@/lib/data-core/mock-provider";
-import { Panel } from "@/components/ui/panel";
-import { Badge } from "@/components/ui/badge";
-import { formatPrice } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 export default function MarketsPage() {
-  const p = getMarketProvider();
-  const rows = p.listInstruments().map((i) => ({ i, q: p.getQuote(i.symbol) }));
+  const provider = getMarketProvider();
+  const rows = provider.listInstruments().map((inst) => {
+    const q = provider.getQuote(inst.symbol);
+    return {
+      symbol: inst.symbol,
+      name: inst.displayName,
+      assetClass: inst.assetClass,
+      venue: inst.venue,
+      tickSize: inst.tickSize,
+      session: inst.session,
+      marginFactor: inst.marginFactor,
+      bid: q?.bid ?? null,
+      ask: q?.ask ?? null,
+      last: q?.last ?? null,
+      changePct: q?.changePct ?? 0,
+      dayHigh: q?.dayHigh ?? null,
+      dayLow: q?.dayLow ?? null,
+      dayVolume: q?.dayVolume ?? 0,
+    };
+  });
 
-  return (
-    <div className="flex min-h-0 flex-1 flex-col p-4">
-      <Panel title="Market explorer">
-        <table className="w-full text-sm">
-          <thead className="sticky top-0 bg-surface hairline text-left text-xs uppercase tracking-wider text-muted-foreground">
-            <tr>
-              <th className="px-4 py-2">Symbol</th>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Class</th>
-              <th className="px-4 py-2 text-right">Bid</th>
-              <th className="px-4 py-2 text-right">Ask</th>
-              <th className="px-4 py-2 text-right">Last</th>
-              <th className="px-4 py-2" />
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(({ i, q }) => (
-              <tr key={i.symbol} className="border-b border-border/60 hover:bg-surface-elevated">
-                <td className="px-4 py-2 font-mono font-semibold">{i.symbol}</td>
-                <td className="px-4 py-2 text-muted-foreground">{i.displayName}</td>
-                <td className="px-4 py-2">
-                  <Badge variant="secondary">{i.assetClass}</Badge>
-                </td>
-                <td className="px-4 py-2 text-right font-mono tabular-nums text-bid">
-                  {q ? formatPrice(q.bid, i.tickSize < 1 ? 4 : 2) : "—"}
-                </td>
-                <td className="px-4 py-2 text-right font-mono tabular-nums text-ask">
-                  {q ? formatPrice(q.ask, i.tickSize < 1 ? 4 : 2) : "—"}
-                </td>
-                <td className="px-4 py-2 text-right font-mono tabular-nums">
-                  {q ? formatPrice(q.last, i.tickSize < 1 ? 4 : 2) : "—"}
-                </td>
-                <td className="px-4 py-2 text-right">
-                  <Link
-                    href={`/app/charts?symbol=${encodeURIComponent(i.symbol)}`}
-                    className="text-xs text-primary hover:underline"
-                  >
-                    Chart →
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Panel>
-    </div>
-  );
+  return <MarketExplorer rows={rows} />;
 }

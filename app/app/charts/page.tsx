@@ -1,5 +1,5 @@
-import { Panel } from "@/components/ui/panel";
-import { ChartView } from "@/components/chart-view";
+import { ChartWorkspace } from "@/components/chart-workspace";
+import { getMarketProvider } from "@/lib/data-core/mock-provider";
 import type { Timeframe } from "@/lib/data-core/types";
 
 export const dynamic = "force-dynamic";
@@ -12,11 +12,20 @@ export default async function ChartsPage({
   const sp = await searchParams;
   const symbol = sp.symbol ?? "BTC-USD";
   const tf = (sp.tf ?? "15m") as Timeframe;
+  const provider = getMarketProvider();
+  const instruments = provider.listInstruments();
+  const instrument = instruments.find((i) => i.symbol === symbol) ?? instruments[0];
+
   return (
-    <div className="flex min-h-0 flex-1 flex-col p-4">
-      <Panel title={`Chart — ${symbol}`} className="flex-1">
-        <ChartView symbol={symbol} initialTf={tf} />
-      </Panel>
-    </div>
+    <ChartWorkspace
+      initialSymbol={instrument.symbol}
+      initialTf={tf}
+      instruments={instruments.map((i) => ({
+        symbol: i.symbol,
+        name: i.displayName,
+        assetClass: i.assetClass,
+        tickSize: i.tickSize,
+      }))}
+    />
   );
 }

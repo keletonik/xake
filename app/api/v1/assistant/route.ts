@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { streamAssistant, type AssistantMessage } from "@/lib/ai/assistant";
+import { currentAccountId } from "@/lib/auth/current-user";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -24,6 +25,7 @@ export async function POST(req: Request) {
   }
 
   const history: AssistantMessage[] = parsed.data.messages;
+  const accountId = await currentAccountId();
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream<Uint8Array>({
@@ -35,7 +37,7 @@ export async function POST(req: Request) {
       };
 
       try {
-        for await (const ev of streamAssistant(history)) {
+        for await (const ev of streamAssistant(history, accountId)) {
           if (req.signal.aborted) break;
           send(ev.type, ev.data);
         }
