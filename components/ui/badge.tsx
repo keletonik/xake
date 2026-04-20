@@ -3,19 +3,24 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium transition-colors focus:outline-none",
+  "inline-flex items-center border px-2 py-0.5 font-mono uppercase tracking-caps",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-primary/15 text-primary",
-        secondary: "border-transparent bg-secondary text-secondary-foreground",
-        outline: "text-foreground",
-        success: "border-transparent bg-success/15 text-success",
-        destructive: "border-transparent bg-destructive/15 text-destructive",
-        paper: "border-transparent bg-paper/20 text-paper",
+        accent: "border-accent text-accent bg-accent/10",
+        outline: "border-mute-20 text-fg/70",
+        solid: "border-accent bg-accent text-accent-ink",
+        up: "border-accent text-accent",
+        down: "border-mute-30 text-down",
+        mute: "border-mute-10 text-fg/50",
+      },
+      size: {
+        xs: "text-[9px] h-4 px-1.5",
+        sm: "text-[10px] h-5",
+        md: "text-[11px] h-6 px-2.5",
       },
     },
-    defaultVariants: { variant: "default" },
+    defaultVariants: { variant: "outline", size: "sm" },
   },
 );
 
@@ -23,6 +28,6 @@ export interface BadgeProps
   extends React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof badgeVariants> {}
 
-export function Badge({ className, variant, ...props }: BadgeProps) {
-  return <span className={cn(badgeVariants({ variant }), className)} {...props} />;
+export function Badge({ className, variant, size, ...props }: BadgeProps) {
+  return <span className={cn(badgeVariants({ variant, size }), className)} {...props} />;
 }

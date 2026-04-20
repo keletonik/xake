@@ -27,37 +27,46 @@ export function StatusRail() {
       : true;
 
   return (
-    <footer className="flex h-7 items-center justify-between border-t border-border bg-surface-sunken px-3 text-[11px] font-mono text-muted-foreground">
-      <div className="flex items-center gap-3">
-        <Dot ok={!error && !!data} />
-        <span>API {error ? "unreachable" : data ? "ok" : "…"}</span>
-        <span className="opacity-40">•</span>
-        <Dot ok={feedOk} />
-        <span>feed {data?.feed.provider ?? "…"}</span>
-        <span className="opacity-40">•</span>
-        <Dot ok={!!data?.ai.configured} warn={!data?.ai.configured} />
-        <span>ai {data?.ai.configured ? "live" : "stub"}</span>
+    <footer className="flex h-7 shrink-0 items-center justify-between border-t border-mute-10 px-4 font-mono text-[10px] uppercase tracking-caps text-mute-50">
+      <div className="flex items-center gap-4">
+        <Stat label="API" ok={!error && !!data} value={error ? "unreachable" : data ? "ok" : "…"} />
+        <Stat label="Feed" ok={feedOk} value={data?.feed.provider ?? "…"} />
+        <Stat label="AI" ok={!!data?.ai.configured} warn={!data?.ai.configured} value={data?.ai.configured ? "live" : "stub"} />
       </div>
-      <div className="flex items-center gap-3">
-        <span className="uppercase tracking-wider">{data?.env ?? "paper"}</span>
+      <div className="flex items-center gap-4">
+        <span>{data?.env ?? "paper"}</span>
         <span>v{data?.version ?? "0.0.0"}</span>
       </div>
     </footer>
   );
 }
 
-function Dot({ ok, warn }: { ok: boolean; warn?: boolean }) {
+function Stat({
+  label,
+  value,
+  ok,
+  warn,
+}: {
+  label: string;
+  value: string;
+  ok: boolean;
+  warn?: boolean;
+}) {
   return (
-    <span
-      aria-hidden
-      className={cn(
-        "inline-block size-1.5 rounded-full",
-        ok && !warn
-          ? "bg-success"
-          : warn
-          ? "bg-warning animate-pulse"
-          : "bg-destructive animate-pulse",
-      )}
-    />
+    <span className="flex items-center gap-2">
+      <span
+        aria-hidden
+        className={cn(
+          "inline-block size-1.5",
+          ok && !warn
+            ? "bg-accent"
+            : warn
+              ? "bg-fg/60 animate-void-pulse"
+              : "bg-fg/30 animate-void-pulse",
+        )}
+      />
+      <span className="text-mute-40">{label}</span>
+      <span className="text-fg">{value}</span>
+    </span>
   );
 }

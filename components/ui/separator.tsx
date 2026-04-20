@@ -12,7 +12,7 @@ export function Separator({
       role="separator"
       aria-orientation={orientation}
       className={cn(
-        "bg-border shrink-0",
+        "shrink-0 bg-mute-10",
         orientation === "horizontal" ? "h-px w-full" : "w-px self-stretch",
         className,
       )}
