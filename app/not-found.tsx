@@ -1,21 +1,28 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6 text-center">
-      <div className="font-mono text-sm text-muted-foreground">404</div>
-      <h1 className="font-mono text-3xl font-bold">Nothing at this path.</h1>
-      <p className="text-sm text-muted-foreground">
-        Try the landing or jump into the workspace.
+    <div className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-bg px-6 text-center text-fg">
+      <div className="eyebrow">Error · 404</div>
+      <h1 className="font-sans text-[clamp(48px,8vw,128px)] font-light leading-none tracking-tightest">
+        Void.
+      </h1>
+      <p className="max-w-sm font-mono text-[11px] uppercase tracking-caps text-mute-50">
+        Nothing at this path. Try the landing or jump into the workspace.
       </p>
-      <div className="flex gap-2">
-        <Button asChild variant="outline">
-          <Link href="/">Home</Link>
-        </Button>
-        <Button asChild>
-          <Link href="/app">Open cockpit</Link>
-        </Button>
+      <div className="flex gap-3">
+        <Link
+          href="/"
+          className="border border-mute-20 px-4 py-2.5 font-mono text-[11px] uppercase tracking-caps hover:border-accent hover:text-accent"
+        >
+          Home
+        </Link>
+        <Link
+          href="/app"
+          className="bg-accent px-4 py-2.5 font-mono text-[11px] uppercase tracking-caps text-accent-ink"
+        >
+          Open cockpit
+        </Link>
       </div>
     </div>
   );

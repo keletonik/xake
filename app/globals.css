@@ -2,112 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * XAKE — Void design system.
+ * True black + pure white + magenta pulse (#FF006E).
+ * Archivo display, JetBrains Mono data.
+ */
+
 @layer base {
-  :root {
-    --radius: 0.5rem;
-
-    /* Light (kept honest — XAKE is dark-first but must not flash) */
-    --background: 0 0% 100%;
-    --foreground: 220 15% 10%;
-    --surface: 0 0% 99%;
-    --surface-elevated: 0 0% 97%;
-    --surface-sunken: 220 14% 96%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 210 80% 50%;
-    --primary: 210 80% 48%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 15% 15%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 8% 45%;
-    --accent: 220 14% 94%;
-    --accent-foreground: 220 15% 15%;
-    --destructive: 0 72% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --success: 145 65% 38%;
-    --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 0%;
-    --bid: 145 65% 38%;
-    --ask: 0 72% 50%;
-    --paper: 38 92% 50%;
-  }
-
-  .dark {
-    --background: 220 15% 6%;
-    --foreground: 220 14% 94%;
-    --surface: 220 16% 8%;
-    --surface-elevated: 220 14% 11%;
-    --surface-sunken: 220 18% 5%;
-    --border: 220 12% 18%;
-    --input: 220 12% 18%;
-    --ring: 210 90% 60%;
-    --primary: 210 90% 60%;
-    --primary-foreground: 220 15% 6%;
-    --secondary: 220 14% 12%;
-    --secondary-foreground: 220 14% 94%;
-    --muted: 220 14% 12%;
-    --muted-foreground: 220 8% 62%;
-    --accent: 220 14% 14%;
-    --accent-foreground: 220 14% 94%;
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 0 0% 100%;
-    --success: 145 65% 46%;
-    --success-foreground: 0 0% 0%;
-    --warning: 38 92% 55%;
-    --warning-foreground: 0 0% 0%;
-    --bid: 145 65% 50%;
-    --ask: 0 72% 58%;
-    --paper: 38 92% 55%;
-  }
-
-  .darker {
-    --background: 220 20% 3%;
-    --foreground: 220 14% 92%;
-    --surface: 220 20% 5%;
-    --surface-elevated: 220 18% 7%;
-    --surface-sunken: 220 25% 2%;
-    --border: 220 12% 14%;
-    --input: 220 12% 14%;
-  }
-
   * {
-    @apply border-border;
+    box-sizing: border-box;
   }
   html {
     color-scheme: dark;
+    background: #000;
   }
   body {
-    @apply bg-background text-foreground antialiased;
-    font-feature-settings: "cv11", "ss01", "ss03";
+    background: #000;
+    color: #fff;
+    font-family: var(--font-archivo), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   ::selection {
-    background: hsl(var(--primary) / 0.28);
-    color: hsl(var(--foreground));
+    background: #FF006E;
+    color: #000;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  button {
+    font-family: inherit;
+  }
+  input, select, textarea {
+    font-family: inherit;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    outline: 0;
   }
 }
 
 @layer utilities {
-  .panel {
-    @apply rounded-md border bg-surface shadow-panel;
+  .eyebrow {
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
   }
-  .mono {
-    @apply font-mono tabular-nums;
+  .caps {
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
   }
   .hairline {
-    box-shadow: inset 0 -1px 0 0 hsl(var(--border));
+    box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.08);
+  }
+  .hairline-t {
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  }
+  .grid-rule > * + * {
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .tabnums {
+    font-variant-numeric: tabular-nums;
   }
   .scrollbar-thin::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.15);
   }
   .scrollbar-thin::-webkit-scrollbar-track {
     background: transparent;
+  }
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #FF006E;
+    display: inline-block;
+    animation: void-pulse 2s infinite;
+  }
+  .void-grid {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
   }
 }
 

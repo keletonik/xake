@@ -1,42 +1,44 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
-import { ThemeProvider } from "@/components/theme-provider";
-import { env } from "@/lib/config/env";
+import { Archivo, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
+const archivo = Archivo({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-archivo",
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-jetbrains",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "XAKE — trading decision cockpit",
+  title: "XAKE — trading cockpit",
   description:
-    "A premium, dark-theme trading decision cockpit. Paper trading, AI assistant, charts, alerts.",
-  metadataBase: new URL("https://xake.vercel.app"),
+    "Dark-theme trading cockpit. Markets, charts, orderbook, paper engine, AI co-pilot.",
+  metadataBase: new URL("https://xake.app"),
   openGraph: {
     title: "XAKE",
-    description: "Premium, dark-theme trading decision cockpit.",
+    description: "Dark-theme trading cockpit.",
     type: "website",
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const appName = env().NEXT_PUBLIC_APP_NAME;
   return (
-    <html lang="en" suppressHydrationWarning className={`${GeistSans.variable} ${GeistMono.variable}`}>
-      <head>
-        {/* Flash-free theme bootstrap. next-themes writes the class before paint. */}
-      </head>
-      <body className="font-sans">
-        <ThemeProvider>
-          <a
-            href="#main"
-            className="sr-only focus:not-sr-only fixed left-2 top-2 z-50 rounded bg-primary px-2 py-1 text-xs text-primary-foreground"
-          >
-            Skip to content
-          </a>
-          <div id="main">{children}</div>
-          <div className="sr-only" aria-hidden>
-            {appName}
-          </div>
-        </ThemeProvider>
+    <html lang="en" className={`${archivo.variable} ${jetbrains.variable}`}>
+      <body>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only fixed left-2 top-2 z-50 bg-accent px-2 py-1 text-2xs text-accent-ink"
+        >
+          Skip to content
+        </a>
+        <div id="main">{children}</div>
       </body>
     </html>
   );
