@@ -1,9 +1,0 @@
-/*
- * XAKE UI — single-import stylesheet.
- * Host apps import this file once at the root to get tokens, base element
- * styles, and all component CSS. Themes are switched via the [data-theme]
- * attribute set by ThemeProvider.
- */
-@import "./tokens.css";
-@import "./base.css";
-@import "./components/styles.css";
