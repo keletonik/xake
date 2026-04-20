@@ -1,8 +1,8 @@
 {
-  "name": "xake-verc",
-  "version": "1.0.0",
+  "name": "xake",
+  "version": "1.1.0",
   "private": true,
-  "description": "XAKE — premium dark-theme trading decision cockpit, Vercel-native build",
+  "description": "XAKE — dark-theme trading cockpit, Void design system.",
   "engines": {
     "node": "20.x"
   },
@@ -26,7 +26,6 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "geist": "^1.3.1",
     "lightweight-charts": "^4.2.2",
     "lucide-react": "^0.468.0",
     "next": "^15.5.15",
