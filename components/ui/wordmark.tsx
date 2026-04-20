@@ -1,55 +1,67 @@
 import * as React from "react";
 
+/**
+ * XAKE lockup — Terminal register.
+ * Chevron prompt + lowercase JetBrains Mono + green cursor block.
+ */
 export function Wordmark({
   className,
-  hideDot = false,
-  fill = "#FFFFFF",
-  dot = "#FF006E",
+  hideCursor = false,
+  fill = "#F5F5F5",
+  cursor = "#00FF66",
 }: {
   className?: string;
-  hideDot?: boolean;
+  hideCursor?: boolean;
   fill?: string;
-  dot?: string;
+  cursor?: string;
 }) {
   return (
-    <svg viewBox="0 0 900 200" className={className} aria-label="XAKE">
-      <g transform="translate(60, 30)">
+    <svg viewBox="0 0 900 200" className={className} aria-label="xake">
+      <g transform="translate(70, 55)">
         <path
-          d="M 0 0 L 70 70 L 0 140"
+          d="M 0 0 L 50 45 L 0 90"
           fill="none"
           stroke={fill}
-          strokeWidth="22"
+          strokeWidth="20"
           strokeLinecap="square"
-        />
-        <path
-          d="M 180 0 L 110 70 L 180 140"
-          fill="none"
-          stroke={fill}
-          strokeWidth="22"
-          strokeLinecap="square"
+          strokeLinejoin="miter"
         />
       </g>
-      <g fill={fill} fontFamily="Archivo" fontWeight="900" fontSize="180" letterSpacing="-4">
-        <text x="300" y="170">A</text>
-        <text x="470" y="170">K</text>
-        <text x="640" y="170">E</text>
+      <g
+        fill={fill}
+        fontFamily="'JetBrains Mono', ui-monospace, monospace"
+        fontWeight="700"
+        fontSize="140"
+        letterSpacing="-4"
+      >
+        <text x="200" y="160">xake</text>
       </g>
-      {!hideDot && <circle cx="150" cy="100" r="4" fill={dot} />}
+      {!hideCursor && <rect x="620" y="52" width="42" height="110" fill={cursor} />}
     </svg>
   );
 }
 
+/** Monogram — chevron glyph with terminal cursor block. */
 export function Monogram({
   className,
-  fill = "#FFFFFF",
+  fill = "#F5F5F5",
+  cursor = "#00FF66",
 }: {
   className?: string;
   fill?: string;
+  cursor?: string;
 }) {
   return (
-    <svg viewBox="0 0 100 100" className={className} aria-label="XAKE">
-      <path d="M 10 10 L 50 50 L 10 90 L 26 90 L 50 62 L 50 38 Z" fill={fill} />
-      <path d="M 90 10 L 50 50 L 90 90 L 74 90 L 50 62 L 50 38 Z" fill={fill} />
+    <svg viewBox="0 0 100 100" className={className} aria-label="xake">
+      <path
+        d="M 28 22 L 60 50 L 28 78"
+        fill="none"
+        stroke={fill}
+        strokeWidth="14"
+        strokeLinecap="square"
+        strokeLinejoin="miter"
+      />
+      <rect x="68" y="42" width="14" height="16" fill={cursor} />
     </svg>
   );
 }
