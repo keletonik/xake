@@ -41,7 +41,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
               <span>XAKE</span>
             </div>
             <p style={{ color: "var(--colour-text-muted)", fontSize: "var(--text-dense)", maxWidth: 44 + "ch" }}>
-              A premium trading cockpit for analysis and paper trading. Claude-powered co-pilot.
+              A premium trading cockpit for analysis and paper trading. AI-powered co-pilot.
               No live-money execution until licensing is in place.
             </p>
           </div>

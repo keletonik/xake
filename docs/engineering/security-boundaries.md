@@ -28,7 +28,7 @@ There is no live-trading code path in this repo. The paper engine and the order 
 - No secret is hard-coded.
 - Secrets load via `apps/api/src/env.ts` from `process.env`.
 - In production, secrets live in Replit Secrets.
-- Rotation runbook: `docs/engineering/replit-claude.md`.
+- Rotation runbook: `docs/engineering/replit-assistant.md`.
 
 ## Transport
 

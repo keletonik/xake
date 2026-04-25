@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Badge,
@@ -24,6 +24,14 @@ const ADAPTER = new MockChartAdapter();
 const TIMEFRAMES: Timeframe[] = ["1m", "5m", "15m", "1h", "4h", "1d"];
 
 export default function ChartWorkspacePage() {
+  return (
+    <Suspense fallback={null}>
+      <ChartWorkspaceInner />
+    </Suspense>
+  );
+}
+
+function ChartWorkspaceInner() {
   const params = useSearchParams();
   const { activeSymbol, activeTimeframe, chartType, setActiveSymbol, setActiveTimeframe, setChartType } = useWorkspace();
   const [status, setStatus] = useState<ChartStatus>({ loading: true });

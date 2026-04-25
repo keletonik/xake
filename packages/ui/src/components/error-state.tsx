@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "../lib/cn";
 
-export interface ErrorStateProps extends HTMLAttributes<HTMLDivElement> {
+export interface ErrorStateProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
   icon?: ReactNode;
   title: ReactNode;
   description?: ReactNode;

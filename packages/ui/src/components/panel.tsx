@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "../lib/cn";
 
-export interface PanelProps extends HTMLAttributes<HTMLElement> {
+export interface PanelProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
   title?: ReactNode;
   actions?: ReactNode;
   dense?: boolean;

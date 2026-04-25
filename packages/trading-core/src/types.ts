@@ -29,7 +29,9 @@ export const OrderDraftSchema = z.object({
   quantity: z.number().positive(),
   limitPrice: z.number().positive().optional(),
   tif: TimeInForceSchema.default("day"),
-  env: z.literal("paper").default("paper"),
+  // Schema accepts both environments so the orders route can return a
+  // specific 403 LIVE_DISABLED rather than a generic 400 schema error.
+  env: z.enum(["paper", "live"]).default("paper"),
   reason: z.string().max(1000).optional()
 });
 export type OrderDraft = z.infer<typeof OrderDraftSchema>;

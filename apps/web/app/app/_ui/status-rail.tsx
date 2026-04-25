@@ -12,7 +12,7 @@ interface Health {
     mock: { status: string; lastTickAt?: number; reconnectCount?: number };
     coinbase: { status: string; reconnectCount?: number };
   };
-  claude: { enabled: boolean; defaultModel: string };
+  assistant: { enabled: boolean; defaultModel: string };
   auth?: { clerkEnabled?: boolean; mode?: "demo" | "user" | "fallback" };
 }
 
@@ -74,8 +74,8 @@ export function StatusRail() {
       />
       <StatusItem
         label="ai"
-        value={health?.claude.enabled ? health.claude.defaultModel : "mock"}
-        tone={health?.claude.enabled ? "info" : "warning"}
+        value={health?.assistant.enabled ? health.assistant.defaultModel : "mock"}
+        tone={health?.assistant.enabled ? "info" : "warning"}
       />
       <StatusItem label="env" value={health?.env ?? "paper"} tone="warning" />
       <StatusItem

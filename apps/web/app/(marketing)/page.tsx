@@ -16,7 +16,7 @@ export default function Landing() {
           </h1>
           <p className="mkt-hero__lede">
             XAKE is a dark, terminal-grade decision cockpit for market operators. Chart-first,
-            disciplined, and wired to a Claude-powered co-pilot that drafts — you decide.
+            disciplined, and wired to a co-pilot that drafts. You decide.
           </p>
           <div className="mkt-hero__ctas">
             <Link href="/app">
@@ -26,7 +26,7 @@ export default function Landing() {
           </div>
           <div className="mkt-hero__proof">
             <Badge tone="warning" dot>Paper environment by default</Badge>
-            <Badge tone="accent" dot>Claude Sonnet 4.6 co-pilot</Badge>
+            <Badge tone="accent" dot>AI co-pilot, draft-only</Badge>
             <Badge tone="info">Not a licensed broker</Badge>
           </div>
         </div>
@@ -75,7 +75,7 @@ export default function Landing() {
           <ShowcaseCard
             eyebrow="AI co-pilot"
             title="Drafts. Never autopilot."
-            body="Claude Sonnet 4.6 analyses, summarises, and drafts. Every action you take is explicit, validated, and audited."
+            body="The assistant analyses, summarises, and drafts. Every action you take is explicit, validated, and audited."
           />
         </div>
       </section>
@@ -93,7 +93,7 @@ export default function Landing() {
             <CardMeta>Server-side only</CardMeta>
             <CardTitle>No browser-side API keys</CardTitle>
             <CardDescription>
-              Claude runs in the Hono API layer. Streaming to the UI is SSE — the browser never touches Anthropic directly.
+              The model runs in the Hono API layer. Streaming to the UI is SSE; the browser never touches a model provider directly.
             </CardDescription>
           </Card>
           <Card>
@@ -107,7 +107,7 @@ export default function Landing() {
             <CardMeta>Rate-limit aware</CardMeta>
             <CardTitle>Graceful downgrade</CardTitle>
             <CardDescription>
-              When Anthropic is busy, the assistant honours `retry-after` and falls back from Sonnet to Haiku rather than stalling.
+              When the upstream is busy, the assistant honours `retry-after` and falls back to a faster tier rather than stalling.
             </CardDescription>
           </Card>
           <Card>
@@ -140,7 +140,7 @@ export default function Landing() {
         <SectionHeader
           eyebrow="No sign-up required"
           title="Try demo trading"
-          description="One click spins up an isolated demo account in your browser. $100,000 in virtual cash, the full workspace, the Claude co-pilot — nothing touches a real account. Your demo state lives on the server, scoped to your browser, clearly labelled throughout the app."
+          description="One click spins up an isolated demo account in your browser. $100,000 in virtual cash, the full workspace, the AI co-pilot. Nothing touches a real account. Your demo state lives on the server, scoped to your browser, clearly labelled throughout the app."
           actions={<DemoCta />}
         />
         <div className="mkt-grid mkt-grid--2" style={{ marginTop: "var(--space-4)" }}>

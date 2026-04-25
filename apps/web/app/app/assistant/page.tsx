@@ -39,7 +39,7 @@ export default function AssistantPage() {
       <SectionHeader
         eyebrow="Workspace"
         title="Assistant"
-        description="Claude-powered co-pilot. It explains markets, summarises news, drafts watchlists, suggests alerts, and drafts paper orders. It never places orders on its own."
+        description="AI co-pilot. It explains markets, summarises news, drafts watchlists, suggests alerts, and drafts paper orders. It never places orders on its own."
         actions={
           <>
             <Badge tone="accent" dot>server-side</Badge>
@@ -154,9 +154,9 @@ export default function AssistantPage() {
           <Panel title="Safety model" dense>
             <ul style={{ color: "var(--colour-text-secondary)", fontSize: "var(--text-dense)", paddingLeft: 18, margin: 0, display: "flex", flexDirection: "column", gap: 6 }}>
               <li>No autonomous execution. Drafts become actions only via the Accept button.</li>
-              <li>No browser-side API keys. All Claude traffic flows through the API.</li>
+              <li>No browser-side API keys. All AI traffic flows through the API.</li>
               <li>Structured outputs validated with Zod schemas server-side and client-side.</li>
-              <li>Rate-limit 429s downgrade from Sonnet to Haiku gracefully.</li>
+              <li>Rate-limit 429s downgrade gracefully to a faster tier.</li>
               <li>Every tool call is auditable.</li>
             </ul>
           </Panel>

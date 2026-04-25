@@ -36,7 +36,7 @@ const ENTRIES: Entry[] = [
       "Provider abstraction with mock + Coinbase public WS adapter.",
       "Deterministic paper engine with validated drafts, slippage, limit crossing, buying-power enforcement.",
       "Alerts with SHA-1 dedupe hash and cooldowns.",
-      "Claude assistant with SSE streaming, six structured tools, draft-confirm gating.",
+      "AI assistant with SSE streaming, six structured tools, draft-confirm gating.",
       "Eight workspace pages: dashboard, markets, charts, watchlists, alerts, portfolio, paper, assistant."
     ]
   },

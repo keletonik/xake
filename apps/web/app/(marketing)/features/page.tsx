@@ -32,10 +32,10 @@ const FEATURES = [
   {
     group: "AI",
     items: [
-      { title: "Claude Sonnet 4.6 co-pilot", note: "Server-side integration. SSE streaming. Haiku fallback on pressure." },
+      { title: "Streaming co-pilot", note: "Server-side integration. SSE streaming. Fast-tier fallback under pressure." },
       { title: "Six structured tools", note: "search_instruments, summarise_news, build_watchlist, suggest_alert, draft_paper_order, explain_chart." },
       { title: "Draft-confirm gating", note: "Every mutating tool returns a draft card. User confirms via the standard validated API." },
-      { title: "Prompt caching ready", note: "System prompt and tool schemas structured for cache-control once Anthropic cache is enabled." }
+      { title: "Prompt caching ready", note: "System prompt and tool schemas structured for cache-control once provider caching is enabled." }
     ]
   },
   {

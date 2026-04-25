@@ -18,7 +18,7 @@ export default function PricingPage() {
             <CardMeta>Today</CardMeta>
             <CardTitle>Preview</CardTitle>
             <CardDescription>
-              Free. Paper trading, mock feeds, optional public crypto feed, Claude assistant when the key is configured.
+              Free. Paper trading, mock feeds, optional public crypto feed, AI assistant when the key is configured.
             </CardDescription>
             <div style={{ display: "inline-flex", gap: 8, marginTop: 8 }}>
               <Link href="/app"><Button variant="primary">Open workspace</Button></Link>

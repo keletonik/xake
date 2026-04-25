@@ -18,7 +18,7 @@ export default function SecurityPage() {
             <CardMeta>Secrets</CardMeta>
             <CardTitle>Server-only</CardTitle>
             <CardDescription>
-              Anthropic and provider keys never reach the browser. All AI traffic goes through the Hono API on the server.
+              Model and provider keys never reach the browser. All AI traffic goes through the Hono API on the server.
             </CardDescription>
           </Card>
           <Card>
@@ -93,7 +93,7 @@ export default function SecurityPage() {
         <div style={{ marginTop: "var(--space-10)", display: "flex", gap: 10 }}>
           <Badge tone="warning">Paper-only</Badge>
           <Badge tone="info">No real-money flows</Badge>
-          <Badge tone="accent">Claude, server-side only</Badge>
+          <Badge tone="accent">AI, server-side only</Badge>
         </div>
       </div>
     </div>

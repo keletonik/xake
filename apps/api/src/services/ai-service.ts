@@ -8,21 +8,21 @@ import {
   toolSchemaForAnthropic,
   type WorkspaceContext
 } from "@xake/ai-core";
-import { env, isClaudeEnabled } from "../env.js";
+import { env, isAssistantEnabled } from "../env.js";
 
 /**
- * Thin wrapper around the Anthropic SDK. Adds:
+ * Thin wrapper around the model provider SDK. Adds:
  *   - SSE-friendly streaming iterator
  *   - Retry with Retry-After awareness on 429/503
- *   - Model downgrade ladder (default → fast) under pressure
+ *   - Model downgrade ladder (default to fast) under pressure
  *   - Graceful mock responses when no API key is configured, so the
  *     UI and local dev still have a working assistant surface.
  *
  * Secrets never leave the server. Browsers call /v1/assistant/stream
- * instead of touching Anthropic directly.
+ * instead of touching the upstream provider directly.
  */
 
-const client = isClaudeEnabled() ? new Anthropic({ apiKey: env.ANTHROPIC_API_KEY }) : null;
+const client = isAssistantEnabled() ? new Anthropic({ apiKey: env.ASSISTANT_API_KEY }) : null;
 
 export interface AssistantMessage {
   readonly role: "user" | "assistant";
@@ -68,12 +68,12 @@ export async function* runAssistant(req: AssistantRequest): AsyncGenerator<Assis
 
     for await (const chunk of responseStream) {
       if (chunk.type === "content_block_delta") {
-        const d = chunk.delta as Record<string, unknown>;
+        const d = chunk.delta as unknown as Record<string, unknown>;
         if (d.type === "text_delta" && typeof d.text === "string") {
           yield { kind: "text_delta", text: d.text };
         }
       } else if (chunk.type === "content_block_start") {
-        const block = chunk.content_block as Record<string, unknown>;
+        const block = chunk.content_block as unknown as Record<string, unknown>;
         if (block.type === "tool_use") {
           yield { kind: "tool_use", name: String(block.name), input: (block as { input?: unknown }).input };
         }
@@ -115,7 +115,7 @@ async function* mockAssistant(req: AssistantRequest): AsyncGenerator<AssistantEv
   const last = req.messages[req.messages.length - 1]?.content ?? "";
   const symbol = req.context.activeSymbol ?? "AAPL";
   const summary =
-    `Mock assistant (Claude not configured). On ${symbol}, the tape is range-bound with no decisive structure. ` +
+    `Mock assistant (no API key configured). On ${symbol}, the tape is range-bound with no decisive structure. ` +
     `Wait for a clean break of the recent pivot before committing. News flow is quiet; macro calendar is the tell today. ` +
     `You asked: "${last.slice(0, 140)}"`;
   for (const word of summary.split(" ")) {

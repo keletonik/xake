@@ -42,10 +42,12 @@ export const env = {
   CLERK_SECRET_KEY: raw("CLERK_SECRET_KEY") ?? "",
   CLERK_PUBLISHABLE_KEY: raw("CLERK_PUBLISHABLE_KEY") ?? raw("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY") ?? "",
 
-  // AI
-  ANTHROPIC_API_KEY: raw("ANTHROPIC_API_KEY") ?? "",
-  CLAUDE_DEFAULT_MODEL: raw("CLAUDE_DEFAULT_MODEL") ?? "claude-sonnet-4-6",
-  CLAUDE_FAST_MODEL: raw("CLAUDE_FAST_MODEL") ?? "claude-haiku-4-5-20251001",
+  // Assistant (model provider keys / model IDs are factual; env names are generic)
+  ASSISTANT_API_KEY: raw("ASSISTANT_API_KEY") ?? raw("ANTHROPIC_API_KEY") ?? "",
+  ASSISTANT_DEFAULT_MODEL:
+    raw("ASSISTANT_DEFAULT_MODEL") ?? raw("CLAUDE_DEFAULT_MODEL") ?? "claude-sonnet-4-6",
+  ASSISTANT_FAST_MODEL:
+    raw("ASSISTANT_FAST_MODEL") ?? raw("CLAUDE_FAST_MODEL") ?? "claude-haiku-4-5-20251001",
 
   // Feeds
   ENABLE_COINBASE_FEED: bool("ENABLE_COINBASE_FEED"),
@@ -57,6 +59,6 @@ export const env = {
   DEMO_ACCOUNT_ID: raw("DEMO_ACCOUNT_ID") ?? "demo-account"
 } as const;
 
-export const isClaudeEnabled = (): boolean => env.ANTHROPIC_API_KEY.length > 0;
+export const isAssistantEnabled = (): boolean => env.ASSISTANT_API_KEY.length > 0;
 export const isClerkEnabled = (): boolean => env.CLERK_SECRET_KEY.length > 0;
 export const isDatabaseEnabled = (): boolean => !!env.DATABASE_URL;

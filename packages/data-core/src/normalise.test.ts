@@ -31,7 +31,8 @@ describe("normalise", () => {
   });
 
   it("mergeTickIntoCandle creates a new bar at bucket boundaries", () => {
-    const t0 = 1_700_000_000_000;
+    // t0 must be aligned to a 1m boundary for the assertions below to hold.
+    const t0 = 1_700_000_040_000;
     const c1 = mergeTickIntoCandle(null, 100, 5, t0, "inst", "1m");
     expect(c1.open).toBe(100);
     const c2 = mergeTickIntoCandle(c1, 101, 3, t0 + 30_000, "inst", "1m");

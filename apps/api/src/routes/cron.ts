@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { evaluateQuote, type WatchlistIndex } from "@xake/trading-core";
 import { env } from "../env.js";
 import { store } from "../lib/store.js";
@@ -16,7 +16,7 @@ import { streamManager } from "../services/stream-manager.js";
 
 export const cronRoutes = new Hono();
 
-const authorised = (c: Parameters<Parameters<typeof cronRoutes.get>[1]>[0]): boolean => {
+const authorised = (c: Context): boolean => {
   if (!env.CRON_SECRET) return true;
   const header = c.req.header("authorization") ?? c.req.header("x-cron-secret") ?? "";
   return header === `Bearer ${env.CRON_SECRET}` || header === env.CRON_SECRET;

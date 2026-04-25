@@ -17,6 +17,16 @@ const nextConfig = {
   experimental: {
     typedRoutes: false
   },
+  webpack(config) {
+    // The workspace `@xake/api` package is authored in TS with ESM
+    // NodeNext imports (`./app.js`). Webpack's default resolver does
+    // not map those to `.ts` sources, so teach it to.
+    config.resolve.extensionAlias = {
+      ".js": [".ts", ".tsx", ".js"],
+      ".mjs": [".mts", ".mjs"]
+    };
+    return config;
+  },
   async rewrites() {
     // When NEXT_PUBLIC_API_URL is set, front the external Hono server
     // (Replit / self-hosted topology). Otherwise the embedded route

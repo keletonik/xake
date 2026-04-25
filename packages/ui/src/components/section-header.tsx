@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "../lib/cn";
 
-export interface SectionHeaderProps extends HTMLAttributes<HTMLElement> {
+export interface SectionHeaderProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
   eyebrow?: ReactNode;
   title: ReactNode;
   description?: ReactNode;

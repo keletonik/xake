@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL ?? "http://localhost:3000"),
   openGraph: {
     title: "XAKE",
-    description: "A premium trading cockpit. Analysis, paper trading, and a Claude-powered co-pilot.",
+    description: "A premium trading cockpit. Analysis, paper trading, and an AI-powered co-pilot.",
     type: "website"
   },
   icons: { icon: "/favicon.ico" }
